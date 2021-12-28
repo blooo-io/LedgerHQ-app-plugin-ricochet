@@ -8,7 +8,7 @@ void handle_query_contract_id(void *parameters) {
 
     switch (context->selectorIndex) {
         case UPGRADE:
-            strlcpy(msg->version, "Updrage", msg->versionLength);
+            strlcpy(msg->version, "Upgrade", msg->versionLength);
             break;
         default:
             PRINTF("Selector index: %d not supported\n", context->selectorIndex);
