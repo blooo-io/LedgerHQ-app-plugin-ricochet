@@ -4,19 +4,19 @@ import { waitForAppScreen, zemu, genericTx, SPECULOS_ADDRESS, RANDOM_ADDRESS, tx
 import { ethers } from "ethers";
 import { parseEther, parseUnits } from "ethers/lib/utils";
 
-const contractAddr = "0xd6bd29da51d2875a6888c5d211b5fb75bf28ba24";
+const contractAddr = "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2";
 const pluginName = "ricochet";
 const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
 const abi = require(abi_path);
-const label = "nanos_ricochet";
-const steps = 10;
+const label = "nanos_upgrade";
+const steps = 7;
 const transactionUploadDelay = 5000;
 
 test('[Nano S] Upgrade', zemu("nanos", async (sim, eth) => {
     const contract = new ethers.Contract(contractAddr, abi);
 
     // Constants used to create the transaction
-    const amount = "0.995801827876000103";
+    const amount = 10;
 
     const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
 

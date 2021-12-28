@@ -2,8 +2,8 @@
     "chainId": 1,
     "contracts": [
         {
-            "address": "0xd6bd29da51d2875a6888c5d211b5fb75bf28ba24",
-            "contractName": "ISuperToken",
+            "address": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
+            "contractName": "ERC-20",
             "selectors": {
                 "0x3da5b8f0": {
                     "erc20OfInterest": [],
