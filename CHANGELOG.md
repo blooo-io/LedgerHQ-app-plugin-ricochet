@@ -31,4 +31,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Inital version of the brand new Paraswap plugin for Ethereum application.
+- Inital version of the brand new Ricochet plugin for Ethereum application.
