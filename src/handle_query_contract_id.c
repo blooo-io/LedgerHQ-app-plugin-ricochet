@@ -1,4 +1,4 @@
-#include "poap_plugin.h"
+#include "ricochet_plugin.h"
 
 void handle_query_contract_id(void *parameters) {
     ethQueryContractID_t *msg = (ethQueryContractID_t *) parameters;
@@ -7,11 +7,8 @@ void handle_query_contract_id(void *parameters) {
     strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
     switch (context->selectorIndex) {
-        case SAFE_TRANSFER:
-            strlcpy(msg->version, "Safe Transfer", msg->versionLength);
-            break;
-        case MINT_TOKEN:
-            strlcpy(msg->version, "Mint", msg->versionLength);
+        case UPGRADE:
+            strlcpy(msg->version, "Updrage", msg->versionLength);
             break;
         default:
             PRINTF("Selector index: %d not supported\n", context->selectorIndex);

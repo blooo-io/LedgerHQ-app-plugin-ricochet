@@ -4,23 +4,21 @@ import { waitForAppScreen, zemu, genericTx, SPECULOS_ADDRESS, RANDOM_ADDRESS, tx
 import { ethers } from "ethers";
 import { parseEther, parseUnits } from "ethers/lib/utils";
 
-const contractAddr = "0x6f2235864cf897078fcdcc2854b76c482cd16874";
-const pluginName = "poap";
+const contractAddr = "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2";
+const pluginName = "ricochet";
 const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
 const abi = require(abi_path);
-const label = "nanos_safe_transfer";
+const label = "nanos_ricochet";
 const steps = 10;
 const transactionUploadDelay = 5000;
 
-test('[Nano S] Safe Transfer', zemu("nanos", async (sim, eth) => {
+test('[Nano S] Upgrade', zemu("nanos", async (sim, eth) => {
     const contract = new ethers.Contract(contractAddr, abi);
 
     // Constants used to create the transaction
-    const from = "0x6f2235864cf897078fcdcc2854b76c482cd16874";
-    const to = "0x15557c8b7246C38EE71eA6dc69e4347F5DAc2104";
-    const tokenId = "3553424";
+    const amount = "0.995801827876000103";
 
-    const { data } = await contract.populateTransaction['safeTransferFrom(address,address,uint256)'](from, to, tokenId);
+    const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
 
     // Get the generic transaction template
     let unsignedTx = genericTx;

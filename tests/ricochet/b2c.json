@@ -1,0 +1,17 @@
+{
+    "chainId": 1,
+    "contracts": [
+        {
+            "address": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
+            "contractName": "UUPSProxy",
+            "selectors": {
+                "0x3da5b8f0": {
+                    "erc20OfInterest": [],
+                    "method": "upgrade",
+                    "plugin": "Ricochet"
+                }
+            }
+        }
+    ],
+    "name": "Ricochet"
+}
