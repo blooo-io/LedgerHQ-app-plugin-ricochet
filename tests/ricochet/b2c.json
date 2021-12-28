@@ -1,0 +1,17 @@
+{
+    "chainId": 1,
+    "contracts": [
+        {
+            "address": "0xd6bd29da51d2875a6888c5d211b5fb75bf28ba24",
+            "contractName": "ISuperToken",
+            "selectors": {
+                "0x3da5b8f0": {
+                    "erc20OfInterest": [],
+                    "method": "upgrade",
+                    "plugin": "Ricochet"
+                }
+            }
+        }
+    ],
+    "name": "Ricochet"
+}

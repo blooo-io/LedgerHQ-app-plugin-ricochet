@@ -29,13 +29,13 @@ APPVERSION_N     = 0
 APPVERSION_P     = 0
 APPVERSION       = $(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)
 
-APPNAME = "Poap"
+APPNAME = "Ricochet"
 
 #prepare hsm generation
 ifeq ($(TARGET_NAME), TARGET_NANOX)
-ICONNAME=icons/nanox_app_poap.gif
+ICONNAME=icons/nanox_app_ricochet.gif
 else
-ICONNAME=icons/nanos_app_poap.gif
+ICONNAME=icons/nanos_app_ricochet.gif
 endif
 
 ################
@@ -156,4 +156,4 @@ include $(BOLOS_SDK)/Makefile.rules
 dep/%.d: %.c Makefile
 
 listvariants:
-	@echo VARIANTS NONE poap 
+	@echo VARIANTS NONE ricochet 

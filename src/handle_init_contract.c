@@ -1,4 +1,4 @@
-#include "poap_plugin.h"
+#include "ricochet_plugin.h"
 
 // Called once to init.
 void handle_init_contract(void *parameters) {
@@ -21,7 +21,7 @@ void handle_init_contract(void *parameters) {
 
     uint8_t i;
     for (i = 0; i < NUM_SELECTORS; i++) {
-        if (memcmp((uint8_t *) PIC(POAP_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
+        if (memcmp((uint8_t *) PIC(RICOCHET_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
             context->selectorIndex = i;
             break;
         }
@@ -32,11 +32,8 @@ void handle_init_contract(void *parameters) {
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
-        case MINT_TOKEN:
-            context->next_param = EVENT_ID;
-            break;
-        case SAFE_TRANSFER:
-            context->next_param = FROM_ADDRESS;
+        case UPGRADE:
+            context->next_param = AMOUNT;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);

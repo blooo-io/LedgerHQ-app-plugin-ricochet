@@ -17,13 +17,13 @@ const Resolve = require("path").resolve;
 const NANOS_ETH_PATH = Resolve("elfs/ethereum_nanos.elf");
 const NANOX_ETH_PATH = Resolve("elfs/ethereum_nanox.elf");
 
-const NANOS_PLUGIN_PATH = Resolve("elfs/poap_nanos.elf");
-const NANOX_PLUGIN_PATH = Resolve("elfs/poap_nanox.elf");
+const NANOS_PLUGIN_PATH = Resolve("elfs/ricochet_nanos.elf");
+const NANOX_PLUGIN_PATH = Resolve("elfs/ricochet_nanox.elf");
 
-const NANOS_PLUGIN = { Poap: NANOS_PLUGIN_PATH };
-const NANOX_PLUGIN = { Poap: NANOX_PLUGIN_PATH };
+const NANOS_PLUGIN = { Ricochet: NANOS_PLUGIN_PATH };
+const NANOX_PLUGIN = { Ricochet: NANOX_PLUGIN_PATH };
 
-const poapJSON = generate_plugin_config();
+const ricochetJSON = generate_plugin_config();
 
 const SPECULOS_ADDRESS = "0xFE984369CE3919AA7BB4F431082D027B4F8ED70C";
 const RANDOM_ADDRESS = "0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj";
@@ -107,7 +107,7 @@ function zemu(device, func, signed = false) {
       if (!signed) {
         eth.setPluginsLoadConfig({
           baseURL: null,
-          extraPlugins: poapJSON,
+          extraPlugins: ricochetJSON,
         });
       }
       await func(sim, eth);

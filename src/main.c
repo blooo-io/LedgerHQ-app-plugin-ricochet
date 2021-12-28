@@ -22,15 +22,14 @@
 #include "os.h"
 #include "cx.h"
 
-#include "poap_plugin.h"
+#include "ricochet_plugin.h"
 
-// Function: mintToken(uint256 eventId, uint256 tokenId, address receiver, bytes signedMessage)
-// Selector: 0x3da5b8f0
-static const uint8_t MINT_TOKEN_SELECTOR[SELECTOR_SIZE] = {0x3d, 0xa5, 0xb8, 0xf0};
-static const uint8_t SAFE_TRANSFER_SELECTOR[SELECTOR_SIZE] = {0x42, 0x84, 0x2e, 0x0e};
+// Function: upgrade(uint256 amount)
+// Selector: 0x45977d03
+static const uint8_t UPGRADE_SELECTOR[SELECTOR_SIZE] = {0x45, 0x97, 0x7d, 0x03};
 
-// Array of all the different poap selectors.
-const uint8_t *const POAP_SELECTORS[NUM_SELECTORS] = {MINT_TOKEN_SELECTOR, SAFE_TRANSFER_SELECTOR};
+// Array of all the different ricochet selectors.
+const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS] = {UPGRADE_SELECTOR};
 
 // Function to dispatch calls from the ethereum app.
 void dispatch_plugin_calls(int message, void *parameters) {
