@@ -4,7 +4,7 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
-#define NUM_SELECTORS    1
+#define NUM_SELECTORS    2
 #define PLUGIN_NAME      "Ricochet"
 #define TOKEN_FOUND      1 << 1
 #define SELECTOR_SIZE    4
@@ -13,6 +13,7 @@
 
 typedef enum {
     UPGRADE,
+    DOWNGRADE,
 } selector_t;
 
 // Enumeration used to parse the smart contract data.
@@ -29,7 +30,7 @@ typedef enum {
 extern const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS];
 
 // Number of decimals used when the token wasn't found in the CAL.
-#define DEFAULT_DECIMAL WEI_TO_ETHER
+//#define DEFAULT_DECIMAL WEI_TO_ETHER
 
 typedef struct context_t {
     // For display.

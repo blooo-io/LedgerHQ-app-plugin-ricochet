@@ -10,7 +10,7 @@ static void copy_parameter(uint8_t *dst, uint8_t *src) {
 static void handle_amount(const ethPluginProvideParameter_t *msg, context_t *context) {
     copy_parameter(context->amount, sizeof(context->amount));
 }
-static void handle_upgrade(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_upgrade_downgrade(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case AMOUNT:
             handle_amount(msg, context);
@@ -44,8 +44,11 @@ void handle_provide_parameter(void *parameters) {
         }
         context->offset = 0;  // Reset offset
         switch (context->selectorIndex) {
+            case DOWNGRADE:
+                handle_upgrade_downgrade(msg, context);
+                break;
             case UPGRADE:
-                handle_upgrade(msg, context);
+                handle_upgrade_downgrade(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

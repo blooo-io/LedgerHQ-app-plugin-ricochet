@@ -29,9 +29,13 @@ void handle_init_contract(void *parameters) {
     if (i == NUM_SELECTORS) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
     }
+    PRINTF("LOU: handle_init_contract")
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
+        case DOWNGRADE:
+            context->next_param = AMOUNT;
+            break;
         case UPGRADE:
             context->next_param = AMOUNT;
             break;
