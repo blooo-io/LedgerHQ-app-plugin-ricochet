@@ -9,6 +9,11 @@
                     "erc20OfInterest": [],
                     "method": "upgrade",
                     "plugin": "Ricochet"
+                },
+                "0x11bcc81e": {
+                    "erc20OfInterest": [],
+                    "method": "downgrade",
+                    "plugin": "Ricochet"
                 }
             }
         },

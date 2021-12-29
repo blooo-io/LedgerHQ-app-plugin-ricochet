@@ -28,8 +28,12 @@
 // Selector: 0x45977d03
 static const uint8_t UPGRADE_SELECTOR[SELECTOR_SIZE] = {0x45, 0x97, 0x7d, 0x03};
 
+// Function: downgrade(uint256 amount)
+// Selector: 0x11bcc81e
+static const uint8_t DOWNGRADE_SELECTOR[SELECTOR_SIZE] = {0x11, 0xbc, 0xc8, 0x1e};
+
 // Array of all the different ricochet selectors.
-const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS] = {UPGRADE_SELECTOR};
+const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS] = {UPGRADE_SELECTOR, DOWNGRADE_SELECTOR};
 
 // Function to dispatch calls from the ethereum app.
 void dispatch_plugin_calls(int message, void *parameters) {
@@ -39,6 +43,9 @@ void dispatch_plugin_calls(int message, void *parameters) {
             break;
         case ETH_PLUGIN_PROVIDE_PARAMETER:
             handle_provide_parameter(parameters);
+            break;
+        case ETH_PLUGIN_PROVIDE_TOKEN:
+            handle_provide_token(parameters);
             break;
         case ETH_PLUGIN_FINALIZE:
             handle_finalize(parameters);

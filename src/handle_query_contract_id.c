@@ -10,6 +10,9 @@ void handle_query_contract_id(void *parameters) {
         case UPGRADE:
             strlcpy(msg->version, "Upgrade", msg->versionLength);
             break;
+        case DOWNGRADE:
+            strlcpy(msg->version, "Downgrade", msg->versionLength);
+            break;
         default:
             PRINTF("Selector index: %d not supported\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
