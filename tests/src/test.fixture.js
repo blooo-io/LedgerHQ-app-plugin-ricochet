@@ -10,7 +10,6 @@ const sim_options_generic = {
   logging: true,
   X11: true,
   startDelay: 5000,
-  custom: "-k 2.0",
 };
 
 const Resolve = require("path").resolve;
@@ -34,7 +33,7 @@ let genericTx = {
   gasLimit: Number(21000),
   gasPrice: parseUnits("1", "gwei"),
   value: parseEther("1"),
-  chainId: 1,
+  chainId: 137,
   to: RANDOM_ADDRESS,
   data: null,
 };
@@ -118,114 +117,72 @@ function zemu(device, func, signed = false) {
   };
 }
 
-/**
- * Process the trasaction through the full test process in interaction with the simulator
- * @param {Eth} eth Device to test (nanos, nanox)
- * @param {function} sim Zemu simulator
- * @param {int} steps Number of steps to push right button
- * @param {string} label directory against which the test snapshots must be checked.
- * @param {string} rawTxHex RawTransaction Hex to process
- */
-async function processTransaction(eth, sim, steps, label, rawTxHex) {
-  const serializedTx = txFromEtherscan(rawTxHex);
-  let tx = eth.signTransaction("44'/60'/0'/0/0", serializedTx);
+// /**
+//  * Function to execute test with the simulator
+//  * @param {Object} device Device including its name, its label, and the number of steps to process the use case
+//  * @param {string} transactionUploadDelay transaction upload delay
+//  * @param {string} pluginName Name of the plugin
+//  * @param {array} contractAddrs contracts address
+//  * @param {boolean} signed The plugin is already signed and existing in Ledger database
+//  */
+// function processDowngradeTest(device, pluginName, transactionUploadDelay, contractAddrs, signed = false) {
+//   test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
+//     for (var key in contractAddrs) {
+//       const label = "nanos_downgrade_" + key + "";
+//       const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
+//       const abi = require(abi_path);
+//       const contract = new ethers.Contract(contractAddrs[key], abi);
 
-  await sim.waitUntilScreenIsNot(
-    sim.getMainMenuSnapshot(),
-    transactionUploadDelay
-  );
-  await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+//       // Constants used to create the transaction
+//       const amount = 10;
 
-  await tx;
-}
+//       const { data } = await contract.populateTransaction['downgrade(uint256)'](amount);
+
+//       // Get the generic transaction template
+//       let unsignedTx = genericTx;
+//       // Modify `to` to make it interact with the contract
+//       unsignedTx.to = contractAddrs[key];
+//       // Modify the attached data
+//       unsignedTx.data = data;
+//       // Modify the number of ETH sent
+//       unsignedTx.value = parseEther("0.1");
+
+//       // Create serializedTx and remove the "0x" prefix
+//       const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+
+//       const tx = eth.signTransaction(
+//         "44'/60'/0'/0/0",
+//         serializedTx
+//       );
+
+//       await sim.waitUntilScreenIsNot(
+//         sim.getMainMenuSnapshot(),
+//         transactionUploadDelay
+//       );
+//       const steps = device.steps
+//       await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+
+//       await tx;
+//     }
+//   }, signed));
+// }
 
 /**
  * Function to execute test with the simulator
  * @param {Object} device Device including its name, its label, and the number of steps to process the use case
- * @param {string} contractName Name of the contract
- * @param {string} testLabel Name of the test case
- * @param {string} testDirSuffix Name of the folder suffix for snapshot comparison
- * @param {string} rawTxHex RawTx Hex to test
+ * @param {string} transactionUploadDelay transaction upload delay
+ * @param {string} pluginName Name of the plugin
+ * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
-function processTest(device, contractName, testLabel, testDirSuffix, rawTxHex, signed) {
-  test(
-    "[" + contractName + "] - " + device.label + " - " + testLabel,
-    zemu(device.name, async (sim, eth) => {
-      await processTransaction(
-        eth,
-        sim,
-        device.steps,
-        device.name + "_" + testDirSuffix,
-        rawTxHex
-      );
-    }, signed)
-  );
-}
-
-/**
- * Function to execute test with the simulator
- * @param {Object} device Device including its name, its label, and the number of steps to process the use case
- * @param {string} transactionUploadDelay transaction upload delay
- * @param {string} pluginName Name of the plugin
- * @param {array} contractAddrs contracts address
- */
-function processDowngradeTest(device, pluginName, transactionUploadDelay, contractAddrs) {
-  test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
-    for (var key in contractAddrs) {
-      const label = "nanos_downgrade_" + key + "";
-      const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
-      const abi = require(abi_path);
-      const contract = new ethers.Contract(contractAddrs[key], abi);
-
-      // Constants used to create the transaction
-      const amount = 10;
-
-      const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
-
-      // Get the generic transaction template
-      let unsignedTx = genericTx;
-      // Modify `to` to make it interact with the contract
-      unsignedTx.to = contractAddrs[key];
-      // Modify the attached data
-      unsignedTx.data = data;
-      // Modify the number of ETH sent
-      unsignedTx.value = parseEther("0.1");
-
-      // Create serializedTx and remove the "0x" prefix
-      const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
-
-      const tx = eth.signTransaction(
-        "44'/60'/0'/0/0",
-        serializedTx
-      );
-
-      await sim.waitUntilScreenIsNot(
-        sim.getMainMenuSnapshot(),
-        transactionUploadDelay
-      );
-      const steps = device.steps
-      await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
-
-      await tx;
-    }
-  }))
-}
-
-/**
- * Function to execute test with the simulator
- * @param {Object} device Device including its name, its label, and the number of steps to process the use case
- * @param {string} transactionUploadDelay transaction upload delay
- * @param {string} pluginName Name of the plugin
- * @param {array} contractAddrs contracts address
- */
-function processUpgradeTest(device, pluginName, transactionUploadDelay, contractAddrs) {
+function processUpgradeTest(device, pluginName, transactionUploadDelay, contractAddrs, signed = false) {
   test('[Nano S] Upgrade', zemu("nanos", async (sim, eth) => {
     for (var key in contractAddrs) {
       const label = "nanos_upgrade_" + key + "";
       const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
       const abi = require(abi_path);
       const contract = new ethers.Contract(contractAddrs[key], abi);
+      // URL 
 
       // Constants used to create the transaction
       const amount = 10;
@@ -258,12 +215,12 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, contract
 
       await tx;
     }
-  }))
+  }, signed));
 }
 
 module.exports = {
-  processTest,
-  processDowngradeTest,
+  // processTest,
+  // processDowngradeTest,
   processUpgradeTest,
   zemu,
   genericTx

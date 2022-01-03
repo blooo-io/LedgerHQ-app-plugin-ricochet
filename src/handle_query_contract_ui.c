@@ -12,6 +12,13 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
+// Set UI for "Warning" screen.
+static void set_warning_ui(ethQueryContractUI_t *msg,
+                           const context_t *context __attribute__((unused))) {
+    strlcpy(msg->title, "WARNING", msg->titleLength);
+    strlcpy(msg->msg, "Unknown token", msg->msgLength);
+}
+
 // Helper function that returns the enum corresponding to the screen that should be displayed.
 static screens_t get_screen(const ethQueryContractUI_t *msg, const context_t *context) {
     uint8_t index = msg->screenIndex;
@@ -19,6 +26,9 @@ static screens_t get_screen(const ethQueryContractUI_t *msg, const context_t *co
     switch (index) {
         case 0:
             return AMOUNT_SCREEN;
+            break;
+        case 1:
+            return WARN_SCREEN;
             break;
         default:
             return ERROR;
@@ -39,6 +49,9 @@ void handle_query_contract_ui(void *parameters) {
     switch (screen) {
         case AMOUNT_SCREEN:
             set_amount_ui(msg, context);
+            break;
+        case WARN_SCREEN:
+            set_warning_ui(msg, context);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");

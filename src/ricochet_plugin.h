@@ -22,15 +22,12 @@ typedef enum {
     NONE,
 } parameter;
 
-typedef enum {
-    AMOUNT_SCREEN,
-    ERROR,
-} screens_t;
+typedef enum { AMOUNT_SCREEN, WARN_SCREEN, ERROR } screens_t;
 
 extern const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS];
 
 // Number of decimals used when the token wasn't found in the CAL.
-//#define DEFAULT_DECIMAL WEI_TO_ETHER
+#define DEFAULT_DECIMAL WEI_TO_ETHER
 
 typedef struct context_t {
     // For display.
@@ -52,9 +49,9 @@ typedef struct context_t {
 // this check.
 _Static_assert(sizeof(context_t) <= 5 * 32, "Structure of parameters too big.");
 
+void handle_init_contract(void *parameters);
 void handle_provide_parameter(void *parameters);
 void handle_query_contract_ui(void *parameters);
-void handle_init_contract(void *parameters);
 void handle_finalize(void *parameters);
 void handle_provide_token(void *parameters);
 void handle_query_contract_id(void *parameters);
