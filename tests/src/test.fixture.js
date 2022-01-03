@@ -2,6 +2,7 @@ import Zemu from "@zondax/zemu";
 import Eth from "@ledgerhq/hw-app-eth";
 import { generate_plugin_config } from "./generate_plugin_config";
 import { parseEther, parseUnits, RLP } from "ethers/lib/utils";
+import { ethers } from "ethers";
 
 const transactionUploadDelay = 60000;
 
@@ -162,8 +163,108 @@ function processTest(device, contractName, testLabel, testDirSuffix, rawTxHex, s
   );
 }
 
+/**
+ * Function to execute test with the simulator
+ * @param {Object} device Device including its name, its label, and the number of steps to process the use case
+ * @param {string} transactionUploadDelay transaction upload delay
+ * @param {string} pluginName Name of the plugin
+ * @param {array} contractAddrs contracts address
+ */
+function processDowngradeTest(device, pluginName, transactionUploadDelay, contractAddrs) {
+  test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
+    for (var key in contractAddrs) {
+      const label = "nanos_downgrade_" + key + "";
+      const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
+      const abi = require(abi_path);
+      const contract = new ethers.Contract(contractAddrs[key], abi);
+
+      // Constants used to create the transaction
+      const amount = 10;
+
+      const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
+
+      // Get the generic transaction template
+      let unsignedTx = genericTx;
+      // Modify `to` to make it interact with the contract
+      unsignedTx.to = contractAddrs[key];
+      // Modify the attached data
+      unsignedTx.data = data;
+      // Modify the number of ETH sent
+      unsignedTx.value = parseEther("0.1");
+
+      // Create serializedTx and remove the "0x" prefix
+      const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+
+      const tx = eth.signTransaction(
+        "44'/60'/0'/0/0",
+        serializedTx
+      );
+
+      await sim.waitUntilScreenIsNot(
+        sim.getMainMenuSnapshot(),
+        transactionUploadDelay
+      );
+      const steps = device.steps
+      await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+
+      await tx;
+    }
+  }))
+}
+
+/**
+ * Function to execute test with the simulator
+ * @param {Object} device Device including its name, its label, and the number of steps to process the use case
+ * @param {string} transactionUploadDelay transaction upload delay
+ * @param {string} pluginName Name of the plugin
+ * @param {array} contractAddrs contracts address
+ */
+function processUpgradeTest(device, pluginName, transactionUploadDelay, contractAddrs) {
+  test('[Nano S] Upgrade', zemu("nanos", async (sim, eth) => {
+    for (var key in contractAddrs) {
+      const label = "nanos_upgrade_" + key + "";
+      const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
+      const abi = require(abi_path);
+      const contract = new ethers.Contract(contractAddrs[key], abi);
+
+      // Constants used to create the transaction
+      const amount = 10;
+
+      const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
+
+      // Get the generic transaction template
+      let unsignedTx = genericTx;
+      // Modify `to` to make it interact with the contract
+      unsignedTx.to = contractAddrs[key];
+      // Modify the attached data
+      unsignedTx.data = data;
+      // Modify the number of ETH sent
+      unsignedTx.value = parseEther("0.1");
+
+      // Create serializedTx and remove the "0x" prefix
+      const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+
+      const tx = eth.signTransaction(
+        "44'/60'/0'/0/0",
+        serializedTx
+      );
+
+      await sim.waitUntilScreenIsNot(
+        sim.getMainMenuSnapshot(),
+        transactionUploadDelay
+      );
+      const steps = device.steps
+      await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+
+      await tx;
+    }
+  }))
+}
+
 module.exports = {
   processTest,
+  processDowngradeTest,
+  processUpgradeTest,
   zemu,
   genericTx
 };

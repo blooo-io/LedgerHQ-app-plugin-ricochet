@@ -1,13 +1,23 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import { waitForAppScreen, zemu, genericTx, SPECULOS_ADDRESS, RANDOM_ADDRESS, txFromEtherscan } from './test.fixture';
-import { ethers } from "ethers";
-import { parseEther, parseUnits } from "ethers/lib/utils";
+import { processDowngradeTest } from './test.fixture';
 
 const pluginName = "ricochet";
-const steps = 7;
 const transactionUploadDelay = 5000;
+const label = "nanos_downgrade";
+const test = "downgrade";
+const titleTest = "Downgrade";
 
+const devices = [
+    {
+        name: "nanos",
+        label: "Nano S",
+        steps: 7, // <= Define the number of steps for this test case and this device
+    },
+    // {
+    //   name: "nanox",
+    //   label: "Nano X",
+    //   steps: 5, // <= Define the number of steps for this test case and this device
+    // },
+];
 var contractAddrs = {
     "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
     "WETHx": "0x27e1e4e6bc79d93032abef01025811b7e4727e85",
@@ -22,41 +32,6 @@ var contractAddrs = {
     "RIC": "0x263026e7e53dbfdce5ae55ade22493f828922965",
 };
 
-test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
-    for (var key in contractAddrs) {
-        const label = "nanos_downgrade_" + key + "";
-        const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
-        const abi = require(abi_path);
-        const contract = new ethers.Contract(contractAddrs[key], abi);
-
-        // Constants used to create the transaction
-        const amount = 10;
-
-        const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
-
-        // Get the generic transaction template
-        let unsignedTx = genericTx;
-        // Modify `to` to make it interact with the contract
-        unsignedTx.to = contractAddrs[key];
-        // Modify the attached data
-        unsignedTx.data = data;
-        // Modify the number of ETH sent
-        unsignedTx.value = parseEther("0.1");
-
-        // Create serializedTx and remove the "0x" prefix
-        const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
-
-        const tx = eth.signTransaction(
-            "44'/60'/0'/0/0",
-            serializedTx
-        );
-
-        await sim.waitUntilScreenIsNot(
-            sim.getMainMenuSnapshot(),
-            transactionUploadDelay
-        );
-        await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
-
-        await tx;
-    }
-}))
+devices.forEach((device) =>
+    processDowngradeTest(device, pluginName, transactionUploadDelay, contractAddrs)
+);
