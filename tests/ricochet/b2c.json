@@ -6,10 +6,7 @@
             "contractName": "UUPSProxy",
             "selectors": {
                 "0x45977d03": {
-                    "erc20OfInterest": [
-                        "fromToken",
-                        "toToken"
-                    ],
+                    "erc20OfInterest": [],
                     "method": "upgrade",
                     "plugin": "Ricochet"
                 },

@@ -17,31 +17,48 @@ typedef enum {
 } selector_t;
 
 // Enumeration used to parse the smart contract data.
-typedef enum {
-    AMOUNT,
-    NONE,
-} parameter;
+#define AMOUNT          0
+#define AMOUNT_RECEIVED 1
+#define NONE            2
 
-typedef enum { AMOUNT_SCREEN, WARN_SCREEN, ERROR } screens_t;
+typedef enum { SEND_SCREEN, RECEIVE_SCREEN, ERROR } screens_t;
 
 extern const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS];
 
 // Number of decimals used when the token wasn't found in the CAL.
 #define DEFAULT_DECIMAL WEI_TO_ETHER
 
+// uses `0xeeeee` as a dummy address to represent ETH.
+extern const uint8_t RICOCHET_ETH_ADDRESS[ADDRESS_LENGTH];
+
+// Adress 0x00000... used to indicate that the beneficiary is the sender.
+extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
+
+// Returns 1 if corresponding address is the Ricochet address for the chain token (ETH, BNB, MATIC,
+// etc.. are 0xeeeee...).
+#define ADDRESS_IS_NETWORK_TOKEN(_addr) (!memcmp(_addr, RICOCHET_ETH_ADDRESS, ADDRESS_LENGTH))
+
 typedef struct context_t {
     // For display.
     uint8_t amount[INT256_LENGTH];
-
-    // For parsing data.
-    uint16_t offset;
+    uint8_t amount_received[INT256_LENGTH];
+    uint8_t contract_address_sent[ADDRESS_LENGTH];
+    uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker[MAX_TICKER_LEN];
+    char ticker_received[MAX_TICKER_LEN];
+
+    // 32 * 2 + 20 * 3 + 12 * 2 == 64 + 60 + 24 == 144
+    // 32 * 5 == 160 bytes so there are 160 - 144 == 16 bytes left.
+
+    uint16_t offset;
     uint16_t checkpoint;
-    uint8_t skip;
-    uint8_t decimals;
     uint8_t next_param;
-    uint8_t tokens_found;
-    // For both parsing and display.
+    uint8_t token_found;
+    uint8_t valid;
+    uint8_t decimals;
+    uint8_t decimals_received;
+    uint8_t array_len;
+    uint8_t skip;
     selector_t selectorIndex;
 } context_t;
 

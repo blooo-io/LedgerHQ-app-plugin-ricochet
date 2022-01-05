@@ -4,6 +4,20 @@
 void handle_init_contract(void *parameters) {
     ethPluginInitContract_t *msg = (ethPluginInitContract_t *) parameters;
 
+    // PRINTF("Setting address sent to (handle_init): %d\n",
+    //        msg->pluginSharedRO->txContent->gasprice.value);
+    // PRINTF("Setting address sent to (handle_init): %d\n",
+    //        msg->pluginSharedRO->txContent->value.value);
+    // PRINTF("Setting address sent to (handle_init): %d\n",
+    //        msg->pluginSharedRO->txContent->nonce.value);
+    // PRINTF("Setting address sent to (handle_init): %d\n",
+    //        msg->pluginSharedRO->txContent->startgas.value);
+    // PRINTF("Setting address sent to (handle_init): %d\n",
+    //        msg->pluginSharedRO->txContent->chainID.value);
+
+    // PRINTF("Setting address sent to (handle_init): %d\n", msg->pluginContext);
+    // PRINTF("Setting address sent to (handle_init): %d\n", msg->dataSize);
+
     if (msg->interfaceVersion != ETH_PLUGIN_INTERFACE_VERSION_LATEST) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;

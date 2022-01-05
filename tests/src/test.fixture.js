@@ -27,6 +27,7 @@ const ricochetJSON = generate_plugin_config();
 
 const SPECULOS_ADDRESS = "0xFE984369CE3919AA7BB4F431082D027B4F8ED70C";
 const RANDOM_ADDRESS = "0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj";
+//const FROM_RANDOM_ADDRESS = "0x49c89492c69d81b61615bb5a9b90b40129e2c178";
 
 let genericTx = {
   nonce: Number(0),
@@ -35,6 +36,7 @@ let genericTx = {
   value: parseEther("1"),
   chainId: 137,
   to: RANDOM_ADDRESS,
+  //  from: FROM_RANDOM_ADDRESS,
   data: null,
 };
 

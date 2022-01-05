@@ -35,6 +35,11 @@ static const uint8_t DOWNGRADE_SELECTOR[SELECTOR_SIZE] = {0x11, 0xbc, 0xc8, 0x1e
 // Array of all the different ricochet selectors.
 const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS] = {UPGRADE_SELECTOR, DOWNGRADE_SELECTOR};
 
+// Paraswap uses `0xeeeee` as a dummy address to represent ETH.
+const uint8_t RICOCHET_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee};
+
 // Function to dispatch calls from the ethereum app.
 void dispatch_plugin_calls(int message, void *parameters) {
     switch (message) {
