@@ -5,13 +5,13 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
     if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-        strlcpy(context->ticker, msg->network_ticker, sizeof(context->ticker));
+        strlcpy(context->ticker_sent, msg->network_ticker, sizeof(context->ticker_sent));
     }
 
     amountToString(context->amount,
                    sizeof(context->amount),
                    0,
-                   context->ticker,
+                   context->ticker_sent,
                    msg->msg,
                    msg->msgLength);
 }

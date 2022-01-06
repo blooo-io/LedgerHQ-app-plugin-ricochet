@@ -13,56 +13,12 @@ static void handle_amount(const ethPluginProvideParameter_t *msg, context_t *con
     copy_parameter(context->amount, sizeof(context->amount), msg->parameter);
 }
 
-// Copy amount sent parameter to amount_received
-static void handle_amount_received(const ethPluginProvideParameter_t *msg, context_t *context) {
-    copy_parameter(context->amount, sizeof(context->amount), msg->parameter);
-}
-
-// static void handle_token_sent(const ethPluginProvideParameter_t *msg, context_t *context) {
-//     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
-//     memcpy(context->contract_address_sent,
-//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-//            sizeof(context->contract_address_sent));
-//     PRINTF("TOKEN SENT: %.*H\n", ADDRESS_LENGTH, context->contract_address_sent);
-// }
-
-// static void handle_token_received(const ethPluginProvideParameter_t *msg, context_t *context) {
-//     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
-//     memcpy(context->contract_address_received,
-//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-//            sizeof(context->contract_address_received));
-//     PRINTF("TOKEN RECEIVED: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
-// }
-
-static void handle_upgrade_downgrade(ethPluginProvideParameter_t *msg, context_t *context) {
-    // PRINTF("Setting address sent to (provide param): %d\n",
-    //        msg->pluginSharedRO->txContent->gasprice.value);
-    // PRINTF("Setting address sent to (provide param): %d\n",
-    //        msg->pluginSharedRO->txContent->value.value);
-    // PRINTF("Setting address sent to (provide param): %d\n",
-    //        msg->pluginSharedRO->txContent->nonce.value);
-    // PRINTF("Setting address sent to (provide param): %d\n",
-    //        msg->pluginSharedRO->txContent->startgas.value);
-    // PRINTF("Setting address sent to (provide param): %d\n",
-    //        msg->pluginSharedRO->txContent->chainID.value);
-
-    // PRINTF("Setting address sent to (provide param): %d\n", msg->parameterOffset);
-
+static void handle_upgrade(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case AMOUNT:
             handle_amount(msg, context);
-            context->next_param = AMOUNT_RECEIVED;
-            break;
-        case AMOUNT_RECEIVED:
-            handle_amount_received(msg, context);
             context->next_param = NONE;
             break;
-        // case TOKEN_SENT:
-        //     handle_token_sent(msg, context);
-        //     context->next_param = TOKEN_RECEIVE;
-        // case TOKEN_RECEIVE:
-        //     handle_token_received(msg, context);
-        //     context->next_param = NONE;
         case NONE:
             break;
         default:
@@ -75,6 +31,23 @@ static void handle_upgrade_downgrade(ethPluginProvideParameter_t *msg, context_t
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
+
+    memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
+    memcpy(context->contract_address_received,
+           DAI_TEST,
+           sizeof(context->contract_address_received));
+    // PRINTF("Contract Addr: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
+
+    // print_bytes(msg->pluginSharedRO->txContent->destination,
+    //             sizeof(msg->pluginSharedRO->txContent->destination));
+
+    // PRINTF("Destination: %.*H\n", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
+
+    // PRINTF("DAI_TEST: %.*H\n", ADDRESS_LENGTH, DAI_TEST);
+    // print_bytes(DAI_TEST, sizeof(DAI_TEST));
+
+    memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
+    memcpy(context->contract_address_sent, DAI_TEST, sizeof(context->contract_address_sent));
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
@@ -91,11 +64,11 @@ void handle_provide_parameter(void *parameters) {
         }
         context->offset = 0;  // Reset offset
         switch (context->selectorIndex) {
-            case DOWNGRADE:
-                handle_upgrade_downgrade(msg, context);
-                break;
+            // case DOWNGRADE:
+            //     handle_upgrade_downgrade(msg, context);
+            // break;
             case UPGRADE:
-                handle_upgrade_downgrade(msg, context);
+                handle_upgrade(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

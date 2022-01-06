@@ -4,20 +4,6 @@
 void handle_init_contract(void *parameters) {
     ethPluginInitContract_t *msg = (ethPluginInitContract_t *) parameters;
 
-    // PRINTF("Setting address sent to (handle_init): %d\n",
-    //        msg->pluginSharedRO->txContent->gasprice.value);
-    // PRINTF("Setting address sent to (handle_init): %d\n",
-    //        msg->pluginSharedRO->txContent->value.value);
-    // PRINTF("Setting address sent to (handle_init): %d\n",
-    //        msg->pluginSharedRO->txContent->nonce.value);
-    // PRINTF("Setting address sent to (handle_init): %d\n",
-    //        msg->pluginSharedRO->txContent->startgas.value);
-    // PRINTF("Setting address sent to (handle_init): %d\n",
-    //        msg->pluginSharedRO->txContent->chainID.value);
-
-    // PRINTF("Setting address sent to (handle_init): %d\n", msg->pluginContext);
-    // PRINTF("Setting address sent to (handle_init): %d\n", msg->dataSize);
-
     if (msg->interfaceVersion != ETH_PLUGIN_INTERFACE_VERSION_LATEST) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;
@@ -30,8 +16,8 @@ void handle_init_contract(void *parameters) {
     }
 
     context_t *context = (context_t *) msg->pluginContext;
-
     memset(context, 0, sizeof(*context));
+    context->valid = 1;
 
     uint8_t i;
     for (i = 0; i < NUM_SELECTORS; i++) {
@@ -46,9 +32,9 @@ void handle_init_contract(void *parameters) {
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
-        case DOWNGRADE:
-            context->next_param = AMOUNT;
-            break;
+        // case DOWNGRADE:
+        //     context->next_param = AMOUNT;
+        //     break;
         case UPGRADE:
             context->next_param = AMOUNT;
             break;
