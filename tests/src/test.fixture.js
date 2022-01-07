@@ -1,7 +1,7 @@
 import Zemu from "@zondax/zemu";
 import Eth from "@ledgerhq/hw-app-eth";
 import { generate_plugin_config } from "./generate_plugin_config";
-import { parseEther, parseUnits, RLP } from "ethers/lib/utils";
+import { getContractAddress, parseEther, parseUnits, RLP } from "ethers/lib/utils";
 import { ethers } from "ethers";
 
 const transactionUploadDelay = 60000;
@@ -178,46 +178,46 @@ function zemu(device, func, signed = false) {
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
-function processDowngradeTest(device, pluginName, transactionUploadDelay, contractAddrs, signed = false) {
+function processDowngradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
   test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
-    for (var key in contractAddrs) {
-      const label = "nanos_downgrade_" + key + "";
-      const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
-      const abi = require(abi_path);
-      const contract = new ethers.Contract(contractAddrs[key], abi);
-      // URL 
+    //for (var key in contractAddrs) {
+    const label = "nanos_downgrade_" + token + "";
+    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(contractAddrs[token], abi);
+    // URL 
 
-      // Constants used to create the transaction
-      const amount = 10;
+    // Constants used to create the transaction
+    const amount = 10;
 
-      const { data } = await contract.populateTransaction['downgrade(uint256)'](amount);
+    const { data } = await contract.populateTransaction['downgrade(uint256)'](amount);
 
-      // Get the generic transaction template
-      let unsignedTx = genericTx;
-      // Modify `to` to make it interact with the contract
-      unsignedTx.to = contractAddrs[key];
-      // Modify the attached data
-      unsignedTx.data = data;
-      // Modify the number of ETH sent
-      unsignedTx.value = parseEther("0.1");
+    // Get the generic transaction template
+    let unsignedTx = genericTx;
+    // Modify `to` to make it interact with the contract
+    unsignedTx.to = contractAddrs[token];
+    // Modify the attached data
+    unsignedTx.data = data;
+    // Modify the number of ETH sent
+    unsignedTx.value = parseEther("0.1");
 
-      // Create serializedTx and remove the "0x" prefix
-      const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+    // Create serializedTx and remove the "0x" prefix
+    const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
 
-      const tx = eth.signTransaction(
-        "44'/60'/0'/0/0",
-        serializedTx
-      );
+    const tx = eth.signTransaction(
+      "44'/60'/0'/0/0",
+      serializedTx
+    );
 
-      await sim.waitUntilScreenIsNot(
-        sim.getMainMenuSnapshot(),
-        transactionUploadDelay
-      );
-      const steps = device.steps
-      await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+    await sim.waitUntilScreenIsNot(
+      sim.getMainMenuSnapshot(),
+      transactionUploadDelay
+    );
+    const steps = device.steps
+    await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
 
-      await tx;
-    }
+    await tx;
+    //}
   }, signed));
 }
 
