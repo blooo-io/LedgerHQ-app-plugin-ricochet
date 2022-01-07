@@ -32,12 +32,12 @@ void handle_init_contract(void *parameters) {
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
-        // case DOWNGRADE:
-        //     context->next_param = AMOUNT;
-        //     break;
-        case UPGRADE:
+        case DOWNGRADE:
             context->next_param = AMOUNT;
             break;
+        // case UPGRADE:
+        //     context->next_param = AMOUNT;
+        //     break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

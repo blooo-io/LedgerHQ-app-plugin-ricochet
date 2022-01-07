@@ -32,22 +32,25 @@ void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
 
+    // DAI address
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
-           DAI_TEST,
+           msg->pluginSharedRO->txContent->destination,
            sizeof(context->contract_address_received));
-    // PRINTF("Contract Addr: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
 
-    // print_bytes(msg->pluginSharedRO->txContent->destination,
-    //             sizeof(msg->pluginSharedRO->txContent->destination));
+    PRINTF("Contract Addr: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
 
-    // PRINTF("Destination: %.*H\n", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
+    print_bytes(msg->pluginSharedRO->txContent->destination,
+                sizeof(msg->pluginSharedRO->txContent->destination));
 
-    // PRINTF("DAI_TEST: %.*H\n", ADDRESS_LENGTH, DAI_TEST);
-    // print_bytes(DAI_TEST, sizeof(DAI_TEST));
+    PRINTF("Destination: %.*H\n", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
 
+    PRINTF("DAI_TEST: %.*H\n", ADDRESS_LENGTH, DAIX_TEST);
+    print_bytes(DAIX_TEST, sizeof(DAIX_TEST));
+
+    // DAI address
     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
-    memcpy(context->contract_address_sent, DAI_TEST, sizeof(context->contract_address_sent));
+    memcpy(context->contract_address_sent, DAIX_TEST, sizeof(context->contract_address_sent));
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
@@ -67,7 +70,7 @@ void handle_provide_parameter(void *parameters) {
             // case DOWNGRADE:
             //     handle_upgrade_downgrade(msg, context);
             // break;
-            case UPGRADE:
+            case DOWNGRADE:  // UPGRADE
                 handle_upgrade(msg, context);
                 break;
             default:

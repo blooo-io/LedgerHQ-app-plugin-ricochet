@@ -41,6 +41,8 @@ extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 
 extern const uint8_t DAI_TEST[ADDRESS_LENGTH];
 
+extern const uint8_t DAIX_TEST[ADDRESS_LENGTH];
+
 // Returns 1 if corresponding address is the Ricochet address for the chain token (ETH, BNB, MATIC,
 // etc.. are 0xeeeee...).
 #define ADDRESS_IS_NETWORK_TOKEN(_addr) (!memcmp(_addr, RICOCHET_ETH_ADDRESS, ADDRESS_LENGTH))

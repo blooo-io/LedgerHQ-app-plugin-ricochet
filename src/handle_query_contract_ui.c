@@ -4,9 +4,9 @@
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
-    if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-        strlcpy(context->ticker_sent, msg->network_ticker, sizeof(context->ticker_sent));
-    }
+    // if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+    //     strlcpy(context->ticker_sent, msg->network_ticker, sizeof(context->ticker_sent));
+    // }
 
     amountToString(context->amount,
                    sizeof(context->amount),
@@ -25,9 +25,9 @@ static void set_warning_ui(ethQueryContractUI_t *msg,
 
 static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
-    if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
-        strlcpy(context->ticker_received, msg->network_ticker, sizeof(context->ticker_received));
-    }
+    // if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
+    //     strlcpy(context->ticker_received, msg->network_ticker, sizeof(context->ticker_received));
+    // }
 
     amountToString(context->amount,
                    sizeof(context->amount),

@@ -8,7 +8,7 @@ const devices = [
     {
         name: "nanos",
         label: "Nano S",
-        steps: 7, // <= Define the number of steps for this test case and this device
+        steps: 6, // <= Define the number of steps for this test case and this device
     },
     // {
     //   name: "nanox",
@@ -17,7 +17,7 @@ const devices = [
     // },
 ];
 var contractAddrs = {
-    "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
+    "DAIx": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"
     // "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
     // "WETHx": "0x27e1e4e6bc79d93032abef01025811b7e4727e85",
     // "USDCx": "0xcaa7349cea390f89641fe306d93591f87595dc1f",

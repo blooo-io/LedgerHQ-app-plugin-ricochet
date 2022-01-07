@@ -16,9 +16,9 @@ const devices = [
     //   steps: 5, // <= Define the number of steps for this test case and this device
     // },
 ];
+
 var contractAddrs = {
-    //"DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
-    "DAI": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"
+    "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
 };
 
 devices.forEach((device) =>
