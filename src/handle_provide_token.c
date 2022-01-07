@@ -2,7 +2,7 @@
 
 void handle_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     int index;
-
+    PRINTF("RICOCHET TICKET provide token: 0x%p\n", msg->token1);
     for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
         if (compare_array(super_token_collection[index].super_token_address,
                           context->contract_address_sent,
@@ -24,6 +24,7 @@ void handle_provide_token(void *parameters) {
     if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
         context->decimals = WEI_TO_ETHER;
         context->tokens_found |= TOKEN_SENT_FOUND;
+        handle_tokens(msg, context);
     } else if (msg->token1 != NULL) {
         context->decimals = msg->token1->decimals;
         strlcpy(context->ticker_received,

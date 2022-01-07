@@ -14,7 +14,7 @@
 #define TOKEN_RECEIVED_FOUND 1 << 1
 #define DEFAULT_TICKER       ""
 
-#define SUPER_TOKEN_COLLECTION 1
+#define SUPER_TOKEN_COLLECTION 8
 
 typedef enum {
     UPGRADE,

@@ -32,25 +32,33 @@ void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
 
-    // DAI address
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,
            sizeof(context->contract_address_received));
 
-    PRINTF("Contract Addr: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
+    int index;
+    for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
+        if (compare_array(super_token_collection[index].token_address,
+                          context->contract_address_received,
+                          ADDRESS_LENGTH) == 0) {
+            memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
+            memcpy(context->contract_address_sent,
+                   super_token_collection[index].super_token_address,
+                   sizeof(context->contract_address_sent));
+            break;
+        }
+    }
 
-    print_bytes(msg->pluginSharedRO->txContent->destination,
-                sizeof(msg->pluginSharedRO->txContent->destination));
+    // print_bytes(msg->pluginSharedRO->txContent->destination,
+    //             sizeof(msg->pluginSharedRO->txContent->destination));
 
     PRINTF("Destination: %.*H\n", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
 
-    PRINTF("DAI_TEST: %.*H\n", ADDRESS_LENGTH, DAIX_TEST);
-    print_bytes(DAIX_TEST, sizeof(DAIX_TEST));
-
-    // DAI address
-    memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
-    memcpy(context->contract_address_sent, DAIX_TEST, sizeof(context->contract_address_sent));
+    // PRINTF("context->contract_address_sent: %.*H\n",
+    //        ADDRESS_LENGTH,
+    //        context->contract_address_sent);
+    print_bytes(context->contract_address_sent, sizeof(context->contract_address_sent));
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
