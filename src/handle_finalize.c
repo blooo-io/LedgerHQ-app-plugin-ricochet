@@ -9,35 +9,6 @@ char compare_array(uint8_t a[], uint8_t b[], int size) {
     return 0;
 }
 
-// // to rework
-// void handle_tokens_downgrade(ethPluginFinalize_t *msg, context_t *context) {
-//     int index;
-
-//     for (index = 0; index < 10; index++) {
-//         if (compare_array(super_token_collection[index].super_token_address,
-//                           context->contract_address_sent,
-//                           ADDRESS_LENGTH) == 0) {
-//             msg->tokenLookup1 = super_token_collection[index].token_address;
-//         }
-//     }
-// }
-
-// void handle_tokens_upgrade(ethPluginFinalize_t *msg, context_t *context) {
-//     int index;
-
-//     for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
-//         if (compare_array(super_token_collection[index].super_token_address,
-//                           context->contract_address_received,
-//                           ADDRESS_LENGTH) == 0) {
-//             memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
-//             memcpy(context->contract_address_sent,
-//                    super_token_collection[index].token_address,
-//                    sizeof(context->contract_address_sent));
-//             break;
-//         }
-//     }
-// }
-
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;

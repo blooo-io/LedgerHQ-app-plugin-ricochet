@@ -50,16 +50,6 @@ void handle_provide_parameter(void *parameters) {
         }
     }
 
-    // print_bytes(msg->pluginSharedRO->txContent->destination,
-    //             sizeof(msg->pluginSharedRO->txContent->destination));
-
-    PRINTF("Destination: %.*H\n", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
-
-    // PRINTF("context->contract_address_sent: %.*H\n",
-    //        ADDRESS_LENGTH,
-    //        context->contract_address_sent);
-    print_bytes(context->contract_address_sent, sizeof(context->contract_address_sent));
-
     msg->result = ETH_PLUGIN_RESULT_OK;
 
     if (context->skip) {

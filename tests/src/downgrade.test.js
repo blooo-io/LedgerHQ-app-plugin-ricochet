@@ -24,8 +24,9 @@ var contractAddrs = {
     "SUSHIx": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a",
 
     //"IDLEx": "0xc25351811983818c9fe6d8c580531819c8ade90f",
-    //"MATICx": "0x3ad736904e9e65189c3000c7dd2c8ac8bb7cd4e3",
     //"WETHx": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+
+    //"MATICx": "0x3ad736904e9e65189c3000c7dd2c8ac8bb7cd4e3",
 
     // "exSLP(ETH-USDC)": "0x9d5753d8eb0bc849c695461f866a851f13947cb3",
     // "rexSLP(IDLE-ETH)": "0xf256f2ddd563f372333546bdd3662454cbbcb22a",
