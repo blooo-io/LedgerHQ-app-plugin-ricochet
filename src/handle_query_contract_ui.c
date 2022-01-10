@@ -3,13 +3,18 @@
 
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
-
-    // if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-    //     strlcpy(context->ticker_sent, msg->network_ticker, sizeof(context->ticker_sent));
-    // }
-
     amountToString(context->amount,
                    sizeof(context->amount),
+                   0,
+                   context->ticker_sent,
+                   msg->msg,
+                   msg->msgLength);
+}
+
+static void set_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Send", msg->titleLength);
+    amountToString(context->wad,
+                   sizeof(context->wad),
                    0,
                    context->ticker_sent,
                    msg->msg,
@@ -25,12 +30,18 @@ static void set_warning_ui(ethQueryContractUI_t *msg,
 
 static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
-    // if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
-    //     strlcpy(context->ticker_received, msg->network_ticker, sizeof(context->ticker_received));
-    // }
-
     amountToString(context->amount,
                    sizeof(context->amount),
+                   0,
+                   context->ticker_received,
+                   msg->msg,
+                   msg->msgLength);
+}
+
+static void set_receive_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Receive", msg->titleLength);
+    amountToString(context->wad,
+                   sizeof(context->wad),
                    0,
                    context->ticker_received,
                    msg->msg,
@@ -63,15 +74,37 @@ void handle_query_contract_ui(void *parameters) {
 
     screens_t screen = get_screen(msg, context);
 
-    switch (screen) {
-        case SEND_SCREEN:
-            set_amount_ui(msg, context);
+    switch (context->selectorIndex) {
+        case DOWNGRADE:
+            switch (screen) {
+                case SEND_SCREEN:
+                    set_amount_ui(msg, context);
+                    break;
+                case RECEIVE_SCREEN:
+                    set_receive_ui(msg, context);
+                    break;
+                default:
+                    PRINTF("Received an invalid screenIndex\n");
+                    msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    return;
+            }
             break;
-        case RECEIVE_SCREEN:
-            set_receive_ui(msg, context);
+        case DOWNGRADE_TO_ETH:
+            switch (screen) {
+                case SEND_SCREEN:
+                    set_wad_ui(msg, context);
+                    break;
+                case RECEIVE_SCREEN:
+                    set_receive_wad_ui(msg, context);
+                    break;
+                default:
+                    PRINTF("Received an invalid screenIndex\n");
+                    msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    return;
+            }
             break;
         default:
-            PRINTF("Received an invalid screenIndex\n");
+            PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             return;
     }

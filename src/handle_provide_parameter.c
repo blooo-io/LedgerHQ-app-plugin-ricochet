@@ -13,7 +13,12 @@ static void handle_amount(const ethPluginProvideParameter_t *msg, context_t *con
     copy_parameter(context->amount, sizeof(context->amount), msg->parameter);
 }
 
-static void handle_upgrade(ethPluginProvideParameter_t *msg, context_t *context) {
+// Copy amount sent parameter to amount_sent
+static void handle_wad(const ethPluginProvideParameter_t *msg, context_t *context) {
+    copy_parameter(context->wad, sizeof(context->wad), msg->parameter);
+}
+
+static void handle_downgrade(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case AMOUNT:
             handle_amount(msg, context);
@@ -28,6 +33,20 @@ static void handle_upgrade(ethPluginProvideParameter_t *msg, context_t *context)
     }
 }
 
+static void handle_downgrade_to_eth(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case WAD:
+            handle_wad(msg, context);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
@@ -65,11 +84,11 @@ void handle_provide_parameter(void *parameters) {
         }
         context->offset = 0;  // Reset offset
         switch (context->selectorIndex) {
-            // case DOWNGRADE:
-            //     handle_upgrade_downgrade(msg, context);
-            // break;
-            case DOWNGRADE:  // UPGRADE
-                handle_upgrade(msg, context);
+            case DOWNGRADE:
+                handle_downgrade(msg, context);
+                break;
+            case DOWNGRADE_TO_ETH:
+                handle_downgrade_to_eth(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

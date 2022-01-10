@@ -1,4 +1,4 @@
-import { processUpgradeTest } from './test.fixture';
+import { processDowngradeByETHTest } from './test.fixture';
 
 const pluginName = "ricochet";
 const transactionUploadDelay = 5000;
@@ -8,7 +8,7 @@ const devices = [
     {
         name: "nanos",
         label: "Nano S",
-        steps: 8, // <= Define the number of steps for this test case and this device
+        steps: 6, // <= Define the number of steps for this test case and this device
     },
     // {
     //   name: "nanox",
@@ -16,11 +16,8 @@ const devices = [
     //   steps: 5, // <= Define the number of steps for this test case and this device
     // },
 ];
-
-var contractAddrs = {
-    "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
-};
+var contractAddr = "0x0000000000000000000000000000000000001010"
 
 devices.forEach((device) =>
-    processUpgradeTest(device, pluginName, transactionUploadDelay, contractAddrs, signedPlugin)
+    processDowngradeByETHTest(device, pluginName, transactionUploadDelay, contractAddr, signedPlugin)
 );

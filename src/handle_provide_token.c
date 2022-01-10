@@ -48,6 +48,7 @@ void handle_provide_token(void *parameters) {
         handle_ticker_super_token(msg, context);
     } else {
         context->decimals = DEFAULT_DECIMAL;
+        print_bytes(context->contract_address_received, sizeof(context->contract_address_received));
         handle_ticker_token(msg, context);
         if (strlen(context->ticker_received) == 0) {
             strlcpy(context->ticker_received, "???", sizeof(context->ticker_received));

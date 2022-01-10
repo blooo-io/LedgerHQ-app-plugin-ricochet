@@ -14,17 +14,14 @@
 #define TOKEN_RECEIVED_FOUND 1 << 1
 #define DEFAULT_TICKER       ""
 
-#define SUPER_TOKEN_COLLECTION 8
+#define SUPER_TOKEN_COLLECTION 9
 
-typedef enum {
-    UPGRADE,
-    DOWNGRADE,
-} selector_t;
+typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH } selector_t;
 
 // Enumeration used to parse the smart contract data.
 #define AMOUNT 0
-// #define AMOUNT_RECEIVED 1
-#define NONE 1
+#define WAD    1
+#define NONE   2
 
 typedef enum { SEND_SCREEN, RECEIVE_SCREEN, ERROR } screens_t;
 
@@ -60,14 +57,11 @@ extern const super_token_ticker super_token_collection[SUPER_TOKEN_COLLECTION];
 typedef struct context_t {
     // For display.
     uint8_t amount[INT256_LENGTH];
-    uint8_t amount_received[INT256_LENGTH];
+    uint8_t wad[INT256_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
     char ticker_received[MAX_TICKER_LEN];
-
-    // 32 * 2 + 20 * 3 + 12 * 2 == 64 + 60 + 24 == 144
-    // 32 * 5 == 160 bytes so there are 160 - 144 == 16 bytes left.
 
     uint16_t offset;
     uint16_t checkpoint;

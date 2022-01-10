@@ -35,9 +35,9 @@ void handle_init_contract(void *parameters) {
         case DOWNGRADE:
             context->next_param = AMOUNT;
             break;
-        // case UPGRADE:
-        //     context->next_param = AMOUNT;
-        //     break;
+        case DOWNGRADE_TO_ETH:
+            context->next_param = WAD;
+            break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

@@ -144,6 +144,17 @@
                     "plugin": "Ricochet"
                 }
             }
+        },
+        {
+            "address": "0x0000000000000000000000000000000000001010",
+            "contractName": "SETHProxy",
+            "selectors": {
+                "0x160e8be3": {
+                    "erc20OfInterest": [],
+                    "method": "downgradeToETH",
+                    "plugin": "Ricochet"
+                }
+            }
         }
     ],
     "name": "Ricochet"

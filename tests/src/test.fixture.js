@@ -169,6 +169,56 @@ function zemu(device, func, signed = false) {
 //   }, signed));
 // }
 
+/**
+ * Function to execute test with the simulator
+ * @param {Object} device Device including its name, its label, and the number of steps to process the use case
+ * @param {string} transactionUploadDelay transaction upload delay
+ * @param {string} pluginName Name of the plugin
+ * @param {array} contractAddrs contracts address
+ * @param {boolean} signed The plugin is already signed and existing in Ledger database
+ */
+function processDowngradeByETHTest(device, pluginName, transactionUploadDelay, contractAddr, signed = false) {
+  test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
+    //for (var key in contractAddrs) {
+    const label = "nanos_downgrade_to_eth";
+    const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(contractAddr, abi);
+    // URL 
+
+    // Constants used to create the transaction
+    const wad = 10;
+
+    const { data } = await contract.populateTransaction['downgradeToETH(uint256)'](wad);
+
+    // Get the generic transaction template
+    let unsignedTx = genericTx;
+    // Modify `to` to make it interact with the contract
+    unsignedTx.to = contractAddr;
+    // Modify the attached data
+    unsignedTx.data = data;
+    // Modify the number of ETH sent
+    unsignedTx.value = parseEther("0.1");
+
+    // Create serializedTx and remove the "0x" prefix
+    const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+
+    const tx = eth.signTransaction(
+      "44'/60'/0'/0/0",
+      serializedTx
+    );
+
+    await sim.waitUntilScreenIsNot(
+      sim.getMainMenuSnapshot(),
+      transactionUploadDelay
+    );
+    const steps = device.steps
+    await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+
+    await tx;
+    //}
+  }, signed));
+}
 
 /**
  * Function to execute test with the simulator
@@ -276,6 +326,7 @@ module.exports = {
   // processTest,
   processDowngradeTest,
   processUpgradeTest,
+  processDowngradeByETHTest,
   zemu,
   genericTx
 };
