@@ -16,8 +16,8 @@ void handle_init_contract(void *parameters) {
     }
 
     context_t *context = (context_t *) msg->pluginContext;
-
     memset(context, 0, sizeof(*context));
+    context->valid = 1;
 
     uint8_t i;
     for (i = 0; i < NUM_SELECTORS; i++) {
@@ -29,15 +29,14 @@ void handle_init_contract(void *parameters) {
     if (i == NUM_SELECTORS) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
     }
-    PRINTF("LOU: handle_init_contract")
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
         case DOWNGRADE:
             context->next_param = AMOUNT;
             break;
-        case UPGRADE:
-            context->next_param = AMOUNT;
+        case DOWNGRADE_TO_ETH:
+            context->next_param = WAD;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
