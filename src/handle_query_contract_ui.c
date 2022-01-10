@@ -11,6 +11,44 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
+static void set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Send", msg->titleLength);
+    int index;
+    uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
+    uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
+    for (index = 0; index < CONTRACT_ADDRESS_COLLECTION; index++) {
+        if (compare_array(contract_address_collection[index].contract_address,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0) {
+            strlcpy(context->ticker_sent,
+                    (char *) contract_address_collection[index].ticker_sent,
+                    sizeof(context->ticker_sent));
+            break;
+        }
+    }
+
+    amountToString(amount, amount_size, 18, context->ticker_sent, msg->msg, msg->msgLength);
+}
+
+static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Receive", msg->titleLength);
+
+    uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
+    uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
+    int index;
+    for (index = 0; index < CONTRACT_ADDRESS_COLLECTION; index++) {
+        if (compare_array(contract_address_collection[index].contract_address,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0) {
+            strlcpy(context->ticker_received,
+                    (char *) contract_address_collection[index].ticker_received,
+                    sizeof(context->ticker_received));
+            break;
+        }
+    }
+    amountToString(amount, amount_size, 18, context->ticker_received, msg->msg, msg->msgLength);
+}
+
 static void set_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
     amountToString(context->wad,
@@ -83,6 +121,19 @@ void handle_query_contract_ui(void *parameters) {
                 case RECEIVE_SCREEN:
                     set_receive_ui(msg, context);
                     break;
+                default:
+                    PRINTF("Received an invalid screenIndex\n");
+                    msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    return;
+            }
+            break;
+        case DISTRIBUTE:
+            switch (screen) {
+                case SEND_SCREEN:
+                    set_send_ui(msg, context);
+                    break;
+                case RECEIVE_SCREEN:
+                    set_distribute_received_ui(msg, context);
                 default:
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;

@@ -55,7 +55,6 @@ void handle_provide_parameter(void *parameters) {
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,
            sizeof(context->contract_address_received));
-
     int index;
     for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
         if (compare_array(super_token_collection[index].token_address,
@@ -89,6 +88,8 @@ void handle_provide_parameter(void *parameters) {
                 break;
             case DOWNGRADE_TO_ETH:
                 handle_downgrade_to_eth(msg, context);
+                break;
+            case DISTRIBUTE:
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
