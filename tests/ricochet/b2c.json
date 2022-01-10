@@ -155,6 +155,50 @@
                     "plugin": "Ricochet"
                 }
             }
+        },
+        {
+            "address": "0x27c7d067a0c143990ec6ed2772e7136cfcfaecd6",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x71f649eb05aa48cf8d92328d1c486b7d9fdbff6b",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x5786d3754443c0d3d1ddea5bb550ccc476fdf11d",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xe0a0ec8dee2f73943a6b731a2e11484916f45d44",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
         }
     ],
     "name": "Ricochet"
