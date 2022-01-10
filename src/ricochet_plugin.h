@@ -50,7 +50,9 @@ extern const uint8_t DAIX_TEST[ADDRESS_LENGTH];
 typedef struct super_token_ticker {
     uint8_t token_address[ADDRESS_LENGTH];
     uint8_t super_token_address[ADDRESS_LENGTH];
-    char ticker[MAX_TICKER_LEN];
+    char ticker_token[MAX_TICKER_LEN];
+    char ticker_super_token[MAX_TICKER_LEN];
+
 } super_token_ticker;
 
 extern const super_token_ticker super_token_collection[SUPER_TOKEN_COLLECTION];
