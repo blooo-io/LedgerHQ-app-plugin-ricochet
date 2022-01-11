@@ -55,7 +55,6 @@ void handle_provide_parameter(void *parameters) {
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,
            sizeof(context->contract_address_received));
-
     int index;
     for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
         if (compare_array(super_token_collection[index].token_address,

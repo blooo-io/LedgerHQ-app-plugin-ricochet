@@ -16,6 +16,10 @@ void handle_finalize(void *parameters) {
     if (context->valid) {
         msg->numScreens = 2;
 
+        if (context->selectorIndex == DISTRIBUTE) {
+            msg->numScreens--;
+        }
+
         if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
             msg->tokenLookup1 = context->contract_address_received;
             PRINTF("Setting address sent to: %.*H\n",

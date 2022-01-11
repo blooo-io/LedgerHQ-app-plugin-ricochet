@@ -4,7 +4,7 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
-#define NUM_SELECTORS        2
+#define NUM_SELECTORS        3
 #define PLUGIN_NAME          "Ricochet"
 #define TOKEN_FOUND          1 << 1
 #define SELECTOR_SIZE        4
@@ -14,9 +14,10 @@
 #define TOKEN_RECEIVED_FOUND 1 << 1
 #define DEFAULT_TICKER       ""
 
-#define SUPER_TOKEN_COLLECTION 9
+#define SUPER_TOKEN_COLLECTION          9
+#define NUM_CONTRACT_ADDRESS_COLLECTION 15
 
-typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH } selector_t;
+typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, DISTRIBUTE } selector_t;
 
 // Enumeration used to parse the smart contract data.
 #define AMOUNT 0
@@ -51,13 +52,21 @@ typedef struct super_token_ticker {
     char ticker_super_token[MAX_TICKER_LEN];
 
 } super_token_ticker;
-
 extern const super_token_ticker super_token_collection[SUPER_TOKEN_COLLECTION];
+
+typedef struct contract_address_ticker {
+    uint8_t contract_address[ADDRESS_LENGTH];
+    char ticker_sent[MAX_TICKER_LEN];
+    char ticker_received[MAX_TICKER_LEN];
+
+} contract_address_ticker;
+extern const contract_address_ticker CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION];
 
 typedef struct context_t {
     // For display.
     uint8_t amount[INT256_LENGTH];
     uint8_t wad[INT256_LENGTH];
+    char beneficiary[ADDRESS_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];

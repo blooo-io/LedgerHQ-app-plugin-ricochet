@@ -38,6 +38,9 @@ void handle_init_contract(void *parameters) {
         case DOWNGRADE_TO_ETH:
             context->next_param = WAD;
             break;
+        case DISTRIBUTE:
+            context->next_param = NONE;
+            break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
