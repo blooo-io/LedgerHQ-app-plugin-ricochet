@@ -23,7 +23,7 @@ var contractAddrs = {
     "MKRx": "0x6f7c932e7684666c9fd1d44527765433e01ff61d",
     "SUSHIx": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a",
     "IDLEx": "0xc25351811983818c9fe6d8c580531819c8ade90f",
-    "WETHx": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+    "ETHx": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
 };
 
 

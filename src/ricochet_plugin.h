@@ -65,8 +65,6 @@ extern const contract_address_ticker CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_AD
 typedef struct context_t {
     // For display.
     uint8_t amount[INT256_LENGTH];
-    uint8_t wad[INT256_LENGTH];
-    char beneficiary[ADDRESS_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];

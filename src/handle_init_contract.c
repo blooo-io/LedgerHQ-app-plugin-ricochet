@@ -33,10 +33,8 @@ void handle_init_contract(void *parameters) {
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
         case DOWNGRADE:
-            context->next_param = AMOUNT;
-            break;
         case DOWNGRADE_TO_ETH:
-            context->next_param = WAD;
+            context->next_param = AMOUNT;
             break;
         case DISTRIBUTE:
             context->next_param = NONE;

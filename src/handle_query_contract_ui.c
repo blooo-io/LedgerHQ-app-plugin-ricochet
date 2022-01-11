@@ -52,16 +52,6 @@ static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *con
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-static void set_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Send", msg->titleLength);
-    amountToString(context->wad,
-                   sizeof(context->wad),
-                   0,
-                   context->ticker_sent,
-                   msg->msg,
-                   msg->msgLength);
-}
-
 // Set UI for "Warning" screen.
 static void set_warning_ui(ethQueryContractUI_t *msg,
                            const context_t *context __attribute__((unused))) {
@@ -79,15 +69,6 @@ static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
-static void set_receive_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Receive", msg->titleLength);
-    amountToString(context->wad,
-                   sizeof(context->wad),
-                   0,
-                   context->ticker_received,
-                   msg->msg,
-                   msg->msgLength);
-}
 // Helper function that returns the enum corresponding to the screen that should be displayed.
 static screens_t get_screen(const ethQueryContractUI_t *msg, const context_t *context) {
     uint8_t index = msg->screenIndex;
@@ -117,6 +98,7 @@ void handle_query_contract_ui(void *parameters) {
 
     switch (context->selectorIndex) {
         case DOWNGRADE:
+        case DOWNGRADE_TO_ETH:
             switch (screen) {
                 case SEND_SCREEN:
                     set_amount_ui(msg, context);
@@ -137,20 +119,6 @@ void handle_query_contract_ui(void *parameters) {
                     break;
                 case RECEIVE_SCREEN:
                     set_distribute_received_ui(msg, context);
-                default:
-                    PRINTF("Received an invalid screenIndex\n");
-                    msg->result = ETH_PLUGIN_RESULT_ERROR;
-                    return;
-            }
-            break;
-        case DOWNGRADE_TO_ETH:
-            switch (screen) {
-                case SEND_SCREEN:
-                    set_wad_ui(msg, context);
-                    break;
-                case RECEIVE_SCREEN:
-                    set_receive_wad_ui(msg, context);
-                    break;
                 default:
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;
