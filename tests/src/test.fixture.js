@@ -221,7 +221,6 @@ function processDistributeTest(device, pluginName, transactionUploadDelay, token
     //}
   }, signed));
 }
-
 /**
  * Function to execute test with the simulator
  * @param {Object} device Device including its name, its label, and the number of steps to process the use case
@@ -230,46 +229,46 @@ function processDistributeTest(device, pluginName, transactionUploadDelay, token
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
-function processUpgradeTest(device, pluginName, transactionUploadDelay, contractAddrs, signed = false) {
+function processUpgradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
   test('[Nano S] Upgrade', zemu("nanos", async (sim, eth) => {
-    for (var key in contractAddrs) {
-      const label = "nanos_upgrade_" + key + "";
-      const abi_path = `../${pluginName}/abis/` + contractAddrs[key] + '.json';
-      const abi = require(abi_path);
-      const contract = new ethers.Contract(contractAddrs[key], abi);
-      // URL 
+    //for (var key in contractAddrs) {
+    const label = "nanos_upgrade_" + token + "";
+    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(contractAddrs[token], abi);
+    // URL 
 
-      // Constants used to create the transaction
-      const amount = 10;
+    // Constants used to create the transaction
+    const amount = 10;
 
-      const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
+    const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
 
-      // Get the generic transaction template
-      let unsignedTx = genericTx;
-      // Modify `to` to make it interact with the contract
-      unsignedTx.to = contractAddrs[key];
-      // Modify the attached data
-      unsignedTx.data = data;
-      // Modify the number of ETH sent
-      unsignedTx.value = parseEther("0.1");
+    // Get the generic transaction template
+    let unsignedTx = genericTx;
+    // Modify `to` to make it interact with the contract
+    unsignedTx.to = contractAddrs[token];
+    // Modify the attached data
+    unsignedTx.data = data;
+    // Modify the number of ETH sent
+    unsignedTx.value = parseEther("0.1");
 
-      // Create serializedTx and remove the "0x" prefix
-      const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
+    // Create serializedTx and remove the "0x" prefix
+    const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
 
-      const tx = eth.signTransaction(
-        "44'/60'/0'/0/0",
-        serializedTx
-      );
+    const tx = eth.signTransaction(
+      "44'/60'/0'/0/0",
+      serializedTx
+    );
 
-      await sim.waitUntilScreenIsNot(
-        sim.getMainMenuSnapshot(),
-        transactionUploadDelay
-      );
-      const steps = device.steps
-      await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+    await sim.waitUntilScreenIsNot(
+      sim.getMainMenuSnapshot(),
+      transactionUploadDelay
+    );
+    const steps = device.steps
+    await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
 
-      await tx;
-    }
+    await tx;
+    //}
   }, signed));
 }
 

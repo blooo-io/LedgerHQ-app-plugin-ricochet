@@ -13,21 +13,6 @@ static void handle_amount(const ethPluginProvideParameter_t *msg, context_t *con
     copy_parameter(context->amount, sizeof(context->amount), msg->parameter);
 }
 
-static void handle_downgrade(ethPluginProvideParameter_t *msg, context_t *context) {
-    switch (context->next_param) {
-        case AMOUNT:
-            handle_amount(msg, context);
-            context->next_param = NONE;
-            break;
-        case NONE:
-            break;
-        default:
-            PRINTF("Param not supported\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
-    }
-}
-
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
@@ -36,14 +21,27 @@ void handle_provide_parameter(void *parameters) {
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,
            sizeof(context->contract_address_received));
-    int index;
-    for (index = 0; index < SUPER_TOKEN_COLLECTION; index++) {
-        if (compare_array(super_token_collection[index].token_address,
-                          context->contract_address_received,
-                          ADDRESS_LENGTH) == 0) {
+
+    uint8_t i;
+    super_token_ticker_t *currentToken = NULL;
+    for (i = 0; i < NUM_SUPER_TOKEN_COLLECTION; i++) {
+        currentToken = (super_token_ticker_t *) PIC(&SUPER_TOKEN_COLLECTION[i]);
+        if (memcmp(currentToken->token_address,
+                   context->contract_address_received,
+                   ADDRESS_LENGTH) == 0 &&
+            (context->selectorIndex == DOWNGRADE || context->selectorIndex == DOWNGRADE_TO_ETH)) {
             memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
             memcpy(context->contract_address_sent,
-                   super_token_collection[index].super_token_address,
+                   currentToken->super_token_address,
+                   sizeof(context->contract_address_sent));
+            break;
+        } else if (memcmp(currentToken->super_token_address,
+                          context->contract_address_received,
+                          ADDRESS_LENGTH) == 0 &&
+                   context->selectorIndex == UPGRADE) {
+            memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
+            memcpy(context->contract_address_sent,
+                   currentToken->token_address,
                    sizeof(context->contract_address_sent));
             break;
         }
@@ -66,7 +64,8 @@ void handle_provide_parameter(void *parameters) {
         switch (context->selectorIndex) {
             case DOWNGRADE:
             case DOWNGRADE_TO_ETH:
-                handle_downgrade(msg, context);
+            case UPGRADE:
+                handle_amount(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
