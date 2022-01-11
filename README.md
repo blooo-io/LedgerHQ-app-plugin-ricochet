@@ -26,18 +26,21 @@ Need more information about the interface, the architecture, or general stuff ab
 Smart contracts covered by this plugin are:
 
 |Token	|Token Address|	Methods Downgrade	| Methods Upgrade	|
-|:---------------|:----------------|--|:------|
-|DAIx	|0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2|	downgrade(amount)| upgrade(amount)|
-|WETHx	|0x27e1e4E6BC79D93032abef01025811B7E4727e85|	downgrade(amount)| upgrade(amount)|
-|USDCx	|0xCAa7349CEA390F89641fe306D93591f87595dc1F|	downgrade(amount)| upgrade(amount)|
-|WBTCx	|0x4086eBf75233e8492F1BCDa41C7f2A8288c2fB92|	downgrade(amount)|  upgrade(amount)|
-|MKRx	|0x2c530aF1f088B836FA0dCa23c7Ea50E669508C4C|	downgrade(amount)|  upgrade(amount)|
-|MATICx	|0x3aD736904E9e65189c3000c7DD2c8AC8bB7cD4e3|	downgradeToETH(amount)| upgrade(amount)|
-|SUSHIx	|0xDaB943C03f9e84795DC7BF51DdC71DaF0033382b|	downgrade(amount)|  upgrade(amount)|
-|IDLEx	|0xB63E38D21B31719e6dF314D3d2c351dF0D4a9162|	downgrade(amount)|  upgrade(amount)|
+|---------------|---------|---------|------|
+|`DAIx`	|`0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2`|	  `downgrade(amount)`| `upgrade(amount)`|
+|`WETHx`	|`0x27e1e4E6BC79D93032abef01025811B7E4727e85`|	`downgrade(amount)`| `upgrade(amount)`|
+|`USDCx`	|`0xCAa7349CEA390F89641fe306D93591f87595dc1F`|	`downgrade(amount)`| `upgrade(amount)`|
+|`WBTCx`	|`0x4086eBf75233e8492F1BCDa41C7f2A8288c2fB92`|	`downgrade(amount)`|  `upgrade(amount)`|
+|`MKRx`	|`0x2c530aF1f088B836FA0dCa23c7Ea50E669508C4C`|	  `downgrade(amount)`|  `upgrade(amount)`|
+|`MATICx`	|`0x3aD736904E9e65189c3000c7DD2c8AC8bB7cD4e3`|	`downgradeToETH(amount)`| `upgrade(amount)`|
+|`SUSHIx`	|`0xDaB943C03f9e84795DC7BF51DdC71DaF0033382b`|	`downgrade(amount)`|  `upgrade(amount)`|
+|`IDLEx`	|`0xB63E38D21B31719e6dF314D3d2c351dF0D4a9162`|	`downgrade(amount)`|  `upgrade(amount)`|
 
-|Tokens|Contract Address	|Methods|
-|:---------------|:----------------|--|:------|
+
+Dsitribute Smart Contracts
+
+|Tokens|Contract Address	|Methods Distribute|
+|:---------------|:------------------|:------|
 |`DAI>>WETH	`|`0x27C7D067A0C143990EC6ed2772E7136Cfcfaecd6`	|`distribute()`|
 |`WETH>>DAI	`|`0x5786D3754443C0D3D1DdEA5bB550ccc476FdF11D`	|`distribute()`|
 |`USDC>>WBTC`|`0xe0A0ec8dee2f73943A6b731a2e11484916f45D44`	|`distribute()`|
