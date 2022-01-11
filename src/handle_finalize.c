@@ -20,11 +20,18 @@ void handle_finalize(void *parameters) {
             msg->numScreens--;
         }
 
-        if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
+        if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received) &&
+            context->selectorIndex == DOWNGRADE) {
             msg->tokenLookup1 = context->contract_address_received;
             PRINTF("Setting address sent to: %.*H\n",
                    ADDRESS_LENGTH,
                    context->contract_address_received);
+        } else if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent) &&
+                   context->selectorIndex == UPGRADE) {
+            msg->tokenLookup1 = context->contract_address_sent;
+            PRINTF("Setting address sent to: %.*H\n",
+                   ADDRESS_LENGTH,
+                   context->contract_address_sent);
         } else {
             msg->tokenLookup1 = NULL;
         }

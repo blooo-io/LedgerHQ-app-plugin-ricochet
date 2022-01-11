@@ -29,7 +29,7 @@ module.exports = {
     // "**/__tests__/**/*.[jt]s?(x)",
     // "**/?(*.)+(spec|test).[tj]s?(x)",
     // "**/?(*.)+(ispec|test).[tj]s?(x)",
-    "**/downgrade_to_eth.test.*",
+    "**/downgrade.test.*",
   ],
 
   // Path of the file where tests can be """decorated"""

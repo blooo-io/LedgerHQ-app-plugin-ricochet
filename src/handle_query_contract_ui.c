@@ -52,13 +52,6 @@ static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *con
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-// Set UI for "Warning" screen.
-static void set_warning_ui(ethQueryContractUI_t *msg,
-                           const context_t *context __attribute__((unused))) {
-    strlcpy(msg->title, "WARNING", msg->titleLength);
-    strlcpy(msg->msg, "Unknown token", msg->msgLength);
-}
-
 static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
     amountToString(context->amount,
@@ -99,6 +92,7 @@ void handle_query_contract_ui(void *parameters) {
     switch (context->selectorIndex) {
         case DOWNGRADE:
         case DOWNGRADE_TO_ETH:
+        case UPGRADE:
             switch (screen) {
                 case SEND_SCREEN:
                     set_amount_ui(msg, context);
