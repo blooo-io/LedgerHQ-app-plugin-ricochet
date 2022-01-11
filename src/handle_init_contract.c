@@ -39,7 +39,7 @@ void handle_init_contract(void *parameters) {
             context->next_param = WAD;
             break;
         case DISTRIBUTE:
-            context->next_param = NULL;
+            context->next_param = NONE;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);

@@ -11,11 +11,8 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
-static void set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_distribute_send_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
-
-    uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
-    uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
 
     uint8_t i;
     contract_address_ticker *currentTicker = NULL;
@@ -32,14 +29,11 @@ static void set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
         }
     }
 
-    amountToString(amount, amount_size, 18, context->ticker_sent, msg->msg, msg->msgLength);
+    strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
 }
 
 static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
-
-    uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
-    uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
 
     uint8_t i;
     contract_address_ticker *currentTicker = NULL;
@@ -55,7 +49,7 @@ static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *con
             break;
         }
     }
-    amountToString(amount, amount_size, 18, context->ticker_received, msg->msg, msg->msgLength);
+    strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
 static void set_wad_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -139,7 +133,7 @@ void handle_query_contract_ui(void *parameters) {
         case DISTRIBUTE:
             switch (screen) {
                 case SEND_SCREEN:
-                    set_send_ui(msg, context);
+                    set_distribute_send_ui(msg, context);
                     break;
                 case RECEIVE_SCREEN:
                     set_distribute_received_ui(msg, context);
