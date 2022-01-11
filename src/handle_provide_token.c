@@ -70,7 +70,8 @@ void handle_provide_token(void *parameters) {
                 sizeof(context->ticker_received));
         context->tokens_found |= TOKEN_SENT_FOUND;
         handle_ticker_super_token(msg, context);
-    } else if (context->selectorIndex == DOWNGRADE) {  // ETH and IDLE token not found
+    } else if (context->selectorIndex == DOWNGRADE ||
+               context->selectorIndex == DOWNGRADE_TO_ETH) {  // WETH, IDLE, MATIC tokens not found
         context->decimals = DEFAULT_DECIMAL;
         handle_ticker_token(msg, context);
         handle_ticker_super_token(msg, context);

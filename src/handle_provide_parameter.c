@@ -29,7 +29,7 @@ void handle_provide_parameter(void *parameters) {
         if (memcmp(currentToken->token_address,
                    context->contract_address_received,
                    ADDRESS_LENGTH) == 0 &&
-            context->selectorIndex == DOWNGRADE) {
+            (context->selectorIndex == DOWNGRADE || context->selectorIndex == DOWNGRADE_TO_ETH)) {
             memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
             memcpy(context->contract_address_sent,
                    currentToken->super_token_address,

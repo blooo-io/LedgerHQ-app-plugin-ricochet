@@ -21,7 +21,7 @@ void handle_finalize(void *parameters) {
         }
 
         if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received) &&
-            context->selectorIndex == DOWNGRADE) {
+            (context->selectorIndex == DOWNGRADE || context->selectorIndex == DOWNGRADE_TO_ETH)) {
             msg->tokenLookup1 = context->contract_address_received;
             PRINTF("Setting address sent to: %.*H\n",
                    ADDRESS_LENGTH,
