@@ -13,15 +13,20 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
 
 static void set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
-    int index;
+
     uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
     uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
-    for (index = 0; index < CONTRACT_ADDRESS_COLLECTION; index++) {
-        if (compare_array(contract_address_collection[index].contract_address,
+
+    uint8_t i;
+    contract_address_ticker *currentTicker = NULL;
+
+    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+        currentTicker = (contract_address_ticker *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
+        if (compare_array(currentTicker->contract_address,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0) {
             strlcpy(context->ticker_sent,
-                    (char *) contract_address_collection[index].ticker_sent,
+                    (char *) currentTicker->ticker_sent,
                     sizeof(context->ticker_sent));
             break;
         }
@@ -35,13 +40,17 @@ static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *con
 
     uint8_t *amount = msg->pluginSharedRO->txContent->value.value;
     uint8_t amount_size = msg->pluginSharedRO->txContent->value.length;
-    int index;
-    for (index = 0; index < CONTRACT_ADDRESS_COLLECTION; index++) {
-        if (compare_array(contract_address_collection[index].contract_address,
+
+    uint8_t i;
+    contract_address_ticker *currentTicker = NULL;
+
+    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+        currentTicker = (contract_address_ticker *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
+        if (compare_array(currentTicker->contract_address,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0) {
             strlcpy(context->ticker_received,
-                    (char *) contract_address_collection[index].ticker_received,
+                    (char *) currentTicker->ticker_received,
                     sizeof(context->ticker_received));
             break;
         }

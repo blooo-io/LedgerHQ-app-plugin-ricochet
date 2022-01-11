@@ -89,8 +89,6 @@ void handle_provide_parameter(void *parameters) {
             case DOWNGRADE_TO_ETH:
                 handle_downgrade_to_eth(msg, context);
                 break;
-            case DISTRIBUTE:
-                break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
                 msg->result = ETH_PLUGIN_RESULT_ERROR;

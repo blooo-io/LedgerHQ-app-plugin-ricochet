@@ -199,6 +199,127 @@
                     "plugin": "Ricochet"
                 }
             }
+        },
+        {
+            "address": "0x8082ab2f4e220dad92689f3682f3e7a42b206b42",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x3941e2e89f7047e0ac7b9cce18fbe90927a32100",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xe093d8a4269ce5c91cd9389a0646badab2c8d9a3",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x93d2d0812c9856141b080e9ef6e97c7a7b342d7f",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xa152715df800db5926598917a6ef3702308bcb7e",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x250efbb94de68dd165bd6c98e804e08153eb91c6",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xc89583fa7b84d81fe54c1339ce3feb10de8b4c96",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xdc19ed26ad3a544e729b72b50b518a231cbad9ab",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x47de4fd666373ca4a793e2e0e7f995ea7d3c9a29",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0x94e5b18309066dd1e5ae97628afc9d4d7eb58161",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
+        },
+        {
+            "address": "0xbe79a6fd39a8e8b0ff7e1af1ea6e264699680584",
+            "contractName": "StreamExchange",
+            "selectors": {
+                "0xe4fc6b6d": {
+                    "erc20OfInterest": [],
+                    "method": "distribute",
+                    "plugin": "Ricochet"
+                }
+            }
         }
     ],
     "name": "Ricochet"
