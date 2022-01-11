@@ -16,24 +16,35 @@ void handle_finalize(void *parameters) {
     if (context->valid) {
         msg->numScreens = 2;
 
-        if (context->selectorIndex == DISTRIBUTE) {
-            msg->numScreens--;
-        }
-
-        if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received) &&
-            (context->selectorIndex == DOWNGRADE || context->selectorIndex == DOWNGRADE_TO_ETH)) {
-            msg->tokenLookup1 = context->contract_address_received;
-            PRINTF("Setting address sent to: %.*H\n",
-                   ADDRESS_LENGTH,
-                   context->contract_address_received);
-        } else if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent) &&
-                   context->selectorIndex == UPGRADE) {
-            msg->tokenLookup1 = context->contract_address_sent;
-            PRINTF("Setting address sent to: %.*H\n",
-                   ADDRESS_LENGTH,
-                   context->contract_address_sent);
-        } else {
-            msg->tokenLookup1 = NULL;
+        switch (context->selectorIndex) {
+            case DOWNGRADE:
+            case DOWNGRADE_TO_ETH:
+                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
+                    msg->tokenLookup1 = context->contract_address_received;
+                    PRINTF("Setting address sent to: %.*H\n",
+                           ADDRESS_LENGTH,
+                           context->contract_address_received);
+                } else {
+                    msg->tokenLookup1 = NULL;
+                }
+                break;
+            case UPGRADE:
+                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+                    msg->tokenLookup1 = context->contract_address_sent;
+                    PRINTF("Setting address sent to: %.*H\n",
+                           ADDRESS_LENGTH,
+                           context->contract_address_sent);
+                } else {
+                    msg->tokenLookup1 = NULL;
+                }
+                break;
+            case DISTRIBUTE:
+                msg->tokenLookup1 = NULL;
+                break;
+            default:
+                PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+                return;
         }
 
         msg->uiType = ETH_UI_TYPE_GENERIC;
