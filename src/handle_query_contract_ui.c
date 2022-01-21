@@ -1,8 +1,19 @@
 #include "ricochet_plugin.h"
 // Set UI for the "Send" screen.
 
+
+// function to compare array elements
+char compare_array(uint8_t a[], uint8_t b[], int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        if (a[i] != b[i]) return 1;
+    }
+    return 0;
+}
+
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
+        
     amountToString(context->amount,
                    sizeof(context->amount),
                    0,
@@ -30,6 +41,28 @@ static void set_distribute_send_ui(ethQueryContractUI_t *msg, context_t *context
     }
 
     strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
+}
+
+static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Send", msg->titleLength);
+
+    amountToString(msg->pluginSharedRO->txContent->value.value,
+                   msg->pluginSharedRO->txContent->value.length,
+                   DEFAULT_DECIMAL,
+                   context->ticker_sent,
+                   msg->msg,
+                   msg->msgLength);
+}
+
+static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Receive", msg->titleLength);
+
+    amountToString(msg->pluginSharedRO->txContent->value.value,
+                   msg->pluginSharedRO->txContent->value.length,
+                   DEFAULT_DECIMAL,
+                   context->ticker_received,
+                   msg->msg,
+                   msg->msgLength);
 }
 
 static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -117,6 +150,20 @@ void handle_query_contract_ui(void *parameters) {
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;
                     return;
+            }
+            break;
+        case UPGRADE_TO_ETH:
+            switch (screen)
+            {
+                case SEND_SCREEN:
+                    set_upgrade_to_eth_send_ui(msg, context);
+                    break;
+                case RECEIVE_SCREEN:
+                    set_upgrade_to_eth_received_ui(msg, context);
+                default:
+                    PRINTF("Received an invalid screenIndex\n");
+                    msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    return;             
             }
             break;
         default:

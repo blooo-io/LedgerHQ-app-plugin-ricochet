@@ -1,5 +1,18 @@
 #include "ricochet_plugin.h"
 
+// Copies the whole parameter (32 bytes long) from `src` to `dst`.
+// Useful for numbers, data...
+static void copy_parameter(uint8_t *dst, size_t dst_len, uint8_t *src) {
+    // Take the minimum between dst_len and parameter_length to make sure we don't overwrite memory.
+    size_t len = MIN(dst_len, PARAMETER_LENGTH);
+    memcpy(dst, src, len);
+}
+
+// Copy amount sent parameter to amount
+static void handle_amount_value(const ethPluginInitContract_t *msg, context_t *context) {
+    copy_parameter(context->amount, sizeof(context->amount), msg->pluginSharedRO->txContent->value.value);
+}
+
 // Called once to init.
 void handle_init_contract(void *parameters) {
     ethPluginInitContract_t *msg = (ethPluginInitContract_t *) parameters;
@@ -11,7 +24,7 @@ void handle_init_contract(void *parameters) {
 
     if (msg->pluginContextLength < sizeof(context_t)) {
         PRINTF("Plugin parameters structure is bigger than allowed size\n");
-        // msg->result = ETH_PLUGIN_RESULT_ERROR;
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
 
@@ -36,6 +49,10 @@ void handle_init_contract(void *parameters) {
         case UPGRADE:
         case DOWNGRADE_TO_ETH:
             context->next_param = AMOUNT;
+            break;
+        case UPGRADE_TO_ETH:
+            handle_amount_value(msg,context);
+            context->next_param = NONE;
             break;
         case DISTRIBUTE:
             context->next_param = NONE;

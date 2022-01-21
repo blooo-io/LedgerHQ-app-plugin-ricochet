@@ -17,13 +17,13 @@ const devices = [
     // },
 ];
 var contractAddrs = {
-    "DAIx": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-    "USDCx": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-    "WBTCx": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-    "MKRx": "0x6f7c932e7684666c9fd1d44527765433e01ff61d",
-    "SUSHIx": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a",
-    "IDLEx": "0xc25351811983818c9fe6d8c580531819c8ade90f",
-    "ETHx": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+    "DAIx": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
+    "ETHx": "0x27e1e4e6bc79d93032abef01025811b7e4727e85",
+    "USDCx": "0xcaa7349cea390f89641fe306d93591f87595dc1f",
+    "WBTCx": "0x4086ebf75233e8492f1bcda41c7f2a8288c2fb92",
+    "MKRx": "0x2c530af1f088b836fa0dca23c7ea50e669508c4c",
+    "SUSHIx": "0xdab943c03f9e84795dc7bf51ddc71daf0033382b",
+    "IDLEx": "0xb63e38d21b31719e6df314d3d2c351df0d4a9162",
 };
 
 

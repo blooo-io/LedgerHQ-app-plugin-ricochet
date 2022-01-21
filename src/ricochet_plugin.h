@@ -4,20 +4,20 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
-#define NUM_SELECTORS        4
+#define NUM_SELECTORS        5
 #define PLUGIN_NAME          "Ricochet"
-#define TOKEN_FOUND          1 << 1
 #define SELECTOR_SIZE        4
+#define TOKEN_FOUND          1 << 1
 #define PARAMETER_LENGTH     32
 #define RUN_APPLICATION      1
 #define TOKEN_SENT_FOUND     1
 #define TOKEN_RECEIVED_FOUND 1 << 1
-#define DEFAULT_TICKER       ""
+#define DEFAULT_TICKER       "MATIC"
 
 #define NUM_SUPER_TOKEN_COLLECTION      9
 #define NUM_CONTRACT_ADDRESS_COLLECTION 15
 
-typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, DISTRIBUTE, UPGRADE } selector_t;
+typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, DISTRIBUTE, UPGRADE, UPGRADE_TO_ETH } selector_t;
 
 // Enumeration used to parse the smart contract data.
 #define AMOUNT 0
@@ -45,7 +45,6 @@ extern const uint8_t DAIX_TEST[ADDRESS_LENGTH];
 #define ADDRESS_IS_NETWORK_TOKEN(_addr) (!memcmp(_addr, RICOCHET_ETH_ADDRESS, ADDRESS_LENGTH))
 
 typedef struct super_token_ticker {
-    uint8_t token_address[ADDRESS_LENGTH];
     uint8_t super_token_address[ADDRESS_LENGTH];
     char ticker_token[MAX_TICKER_LEN];
     char ticker_super_token[MAX_TICKER_LEN];

@@ -1,13 +1,5 @@
 #include "ricochet_plugin.h"
 
-// function to compare array elements
-char compare_array(uint8_t a[], uint8_t b[], int size) {
-    int i;
-    for (i = 0; i < size; i++) {
-        if (a[i] != b[i]) return 1;
-    }
-    return 0;
-}
 
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
@@ -21,7 +13,7 @@ void handle_finalize(void *parameters) {
             case DOWNGRADE_TO_ETH:
                 if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
                     msg->tokenLookup1 = context->contract_address_received;
-                    PRINTF("Setting address sent to: %.*H\n",
+                    PRINTF("Setting address received to: %.*H\n",
                            ADDRESS_LENGTH,
                            context->contract_address_received);
                 } else {
@@ -29,7 +21,9 @@ void handle_finalize(void *parameters) {
                 }
                 break;
             case UPGRADE:
+            case UPGRADE_TO_ETH:
                 if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+
                     msg->tokenLookup1 = context->contract_address_sent;
                     PRINTF("Setting address sent to: %.*H\n",
                            ADDRESS_LENGTH,

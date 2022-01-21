@@ -7,15 +7,14 @@ void handle_query_contract_id(void *parameters) {
     strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
     switch (context->selectorIndex) {
         case DOWNGRADE:
-            strlcpy(msg->version, "Downgrade", msg->versionLength);
-            break;
         case DOWNGRADE_TO_ETH:
-            strlcpy(msg->version, "DowngradeToETH", msg->versionLength);
+            strlcpy(msg->version, "Downgrade", msg->versionLength);
             break;
         case DISTRIBUTE:
             strlcpy(msg->version, "Distribute", msg->versionLength);
             break;
         case UPGRADE:
+        case UPGRADE_TO_ETH:
             strlcpy(msg->version, "Upgrade", msg->versionLength);
             break;
         default:
