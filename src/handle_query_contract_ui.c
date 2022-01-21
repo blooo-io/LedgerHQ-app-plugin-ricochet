@@ -1,7 +1,6 @@
 #include "ricochet_plugin.h"
 // Set UI for the "Send" screen.
 
-
 // function to compare array elements
 char compare_array(uint8_t a[], uint8_t b[], int size) {
     int i;
@@ -13,7 +12,7 @@ char compare_array(uint8_t a[], uint8_t b[], int size) {
 
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
-        
+
     amountToString(context->amount,
                    sizeof(context->amount),
                    0,
@@ -153,8 +152,7 @@ void handle_query_contract_ui(void *parameters) {
             }
             break;
         case UPGRADE_TO_ETH:
-            switch (screen)
-            {
+            switch (screen) {
                 case SEND_SCREEN:
                     set_upgrade_to_eth_send_ui(msg, context);
                     break;
@@ -163,7 +161,7 @@ void handle_query_contract_ui(void *parameters) {
                 default:
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;
-                    return;             
+                    return;
             }
             break;
         default:

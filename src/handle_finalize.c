@@ -1,6 +1,5 @@
 #include "ricochet_plugin.h"
 
-
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
@@ -23,7 +22,6 @@ void handle_finalize(void *parameters) {
             case UPGRADE:
             case UPGRADE_TO_ETH:
                 if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-
                     msg->tokenLookup1 = context->contract_address_sent;
                     PRINTF("Setting address sent to: %.*H\n",
                            ADDRESS_LENGTH,

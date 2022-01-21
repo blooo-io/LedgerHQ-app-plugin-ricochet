@@ -10,7 +10,9 @@ static void copy_parameter(uint8_t *dst, size_t dst_len, uint8_t *src) {
 
 // Copy amount sent parameter to amount
 static void handle_amount_value(const ethPluginInitContract_t *msg, context_t *context) {
-    copy_parameter(context->amount, sizeof(context->amount), msg->pluginSharedRO->txContent->value.value);
+    copy_parameter(context->amount,
+                   sizeof(context->amount),
+                   msg->pluginSharedRO->txContent->value.value);
 }
 
 // Called once to init.
@@ -51,7 +53,7 @@ void handle_init_contract(void *parameters) {
             context->next_param = AMOUNT;
             break;
         case UPGRADE_TO_ETH:
-            handle_amount_value(msg,context);
+            handle_amount_value(msg, context);
             context->next_param = NONE;
             break;
         case DISTRIBUTE:
