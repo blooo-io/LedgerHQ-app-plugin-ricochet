@@ -129,7 +129,7 @@ function zemu(device, func, signed = false) {
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
 function processDowngradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Downgrade', zemu(device.name, async (sim, eth) => {
+  test('['+device.label+'] Downgrade '+ token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
     const label = device.name + "_downgrade_" + token + "";
     const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
@@ -181,7 +181,7 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
  function processDowngradeToEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Downgrade', zemu(device.name, async (sim, eth) => {
+  test('['+device.label+'] Downgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
     const label = device.name + "_downgrade_" + token + "";
     const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
@@ -282,7 +282,7 @@ function processDistributeTest(device, pluginName, transactionUploadDelay, token
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
 function processUpgradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Upgrade', zemu(device.name, async (sim, eth) => {
+  test('['+device.label+'] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
     const label = device.name + "_upgrade_" + token + "";
     const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
@@ -333,7 +333,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
  function processUpgradeByEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Upgrade', zemu(device.name, async (sim, eth) => {
+  test('['+device.label+'] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
     const label = device.name + "_upgrade_" + token + "";
     const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';

@@ -1,7 +1,7 @@
 import { processDowngradeToEthTest } from './test.fixture';
 
 const pluginName = "ricochet";
-const transactionUploadDelay = 5000;
+const transactionUploadDelay = 10000;
 const signedPlugin = false;
 
 const devices = [
