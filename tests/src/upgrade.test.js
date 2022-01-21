@@ -18,13 +18,12 @@ const devices = [
 ];
 var contractAddrs = {
     "DAI": "0x1305f6b6df9dc47159d12eb7ac2804d4a33173c2",
+    "ETH": "0x27e1e4e6bc79d93032abef01025811b7e4727e85",
     "USDC": "0xcaa7349cea390f89641fe306d93591f87595dc1f",
     "WBTC": "0x4086ebf75233e8492f1bcda41c7f2a8288c2fb92",
     "MKR": "0x2c530af1f088b836fa0dca23c7ea50e669508c4c",
     "SUSHI": "0xdab943c03f9e84795dc7bf51ddc71daf0033382b",
     "IDLE": "0xb63e38d21b31719e6df314d3d2c351df0d4a9162",
-    "ETH": "0x27e1e4e6bc79d93032abef01025811b7e4727e85",
-
 };
 
 for (var key in contractAddrs) {
