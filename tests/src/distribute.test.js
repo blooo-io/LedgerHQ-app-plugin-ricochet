@@ -35,8 +35,8 @@ var contractAddrs = {
 };
 
 
-for (var key in contractAddrs) {
-    devices.forEach((device) =>
-        processDistributeTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin)
-    );
-};
+// for (var key in contractAddrs) {
+//     devices.forEach((device) =>
+//         processDistributeTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin)
+//     );
+// };
