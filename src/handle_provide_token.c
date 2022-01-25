@@ -49,7 +49,7 @@ void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
             memcmp(currentContract->contract_address,
                    context->contract_address_sent,
                    ADDRESS_LENGTH) == 0 &&
-                context->method_id == UPDATE_STREAM) {
+                (context->method_id == UPDATE_STREAM || context->method_id == START_STREAM)) {
             strlcpy(context->ticker_sent,
                     (char *) currentContract->ticker_sent,
                     sizeof(context->ticker_sent));

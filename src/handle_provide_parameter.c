@@ -100,9 +100,6 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
                 U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_len));
             context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
             context->next_param = CALL_DATA;
-
-            PRINTF("RNE: ARRAY_LEN:%d\n", context->array_len);
-
             break;
         case CALL_DATA:
             // Parse Second Level ABI Encoded Input Data
