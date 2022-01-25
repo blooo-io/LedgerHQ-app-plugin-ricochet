@@ -64,13 +64,11 @@ typedef struct contract_address_ticker {
 } contract_address_ticker_t;
 extern const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION];
 
-
 typedef struct cfa_method {
     uint8_t method[SELECTOR_SIZE];
     char method_name[METHOD_NAME_LENGTH];
 } cfa_method_t;
 extern const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION];
-
 
 typedef struct context_t {
     // For display.

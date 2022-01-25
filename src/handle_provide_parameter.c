@@ -20,55 +20,54 @@ static void handle_agreement_class(const ethPluginProvideParameter_t *msg, conte
            sizeof(context->contract_address_sent));
 }
 
-static void handle_method_cfa(ethPluginProvideParameter_t *msg, context_t *context){
+static void handle_method_cfa(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->method_cfa, 0, sizeof(context->method_cfa));
-    memcpy(context->method_cfa,
-           &msg->parameter[0],
-           sizeof(context->method_cfa));
+    memcpy(context->method_cfa, &msg->parameter[0], sizeof(context->method_cfa));
 }
 
-static void handle_token_first_part(ethPluginProvideParameter_t *msg, context_t *context){
+static void handle_token_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->token_address, 0, sizeof(context->token_address));
     memcpy(context->token_address,
-           &msg->parameter[PARAMETER_LENGTH-ADDRESS_LENGTH+SELECTOR_SIZE],
-           sizeof(context->token_address)-SELECTOR_SIZE);
+           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE],
+           sizeof(context->token_address) - SELECTOR_SIZE);
 }
 
-static void handle_token_second_part(ethPluginProvideParameter_t *msg, context_t *context){
-    //memset(context->token_address, 0, sizeof(context->token_address));
-    memcpy(&context->token_address[ADDRESS_LENGTH-SELECTOR_SIZE],
+static void handle_token_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
+    // memset(context->token_address, 0, sizeof(context->token_address));
+    memcpy(&context->token_address[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
-static void handle_sent_address_first_part(ethPluginProvideParameter_t *msg, context_t *context){
+static void handle_sent_address_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
     memcpy(context->contract_address_sent,
-           &msg->parameter[PARAMETER_LENGTH-ADDRESS_LENGTH+SELECTOR_SIZE],
-           sizeof(context->contract_address_sent)-SELECTOR_SIZE);
+           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE],
+           sizeof(context->contract_address_sent) - SELECTOR_SIZE);
 }
 
-static void handle_sent_address_second_part(ethPluginProvideParameter_t *msg, context_t *context){
-    memcpy(&context->contract_address_sent[ADDRESS_LENGTH-SELECTOR_SIZE],
+static void handle_sent_address_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
+    memcpy(&context->contract_address_sent[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
-static void handle_receive_address_first_part(ethPluginProvideParameter_t *msg, context_t *context){
+static void handle_receive_address_first_part(ethPluginProvideParameter_t *msg,
+                                              context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
-           &msg->parameter[PARAMETER_LENGTH-ADDRESS_LENGTH+SELECTOR_SIZE],
-           sizeof(context->contract_address_received)-SELECTOR_SIZE);
+           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE],
+           sizeof(context->contract_address_received) - SELECTOR_SIZE);
 }
 
-static void handle_receive_address_second_part(ethPluginProvideParameter_t *msg, context_t *context){
-    memcpy(&context->contract_address_received[ADDRESS_LENGTH-SELECTOR_SIZE],
+static void handle_receive_address_second_part(ethPluginProvideParameter_t *msg,
+                                               context_t *context) {
+    memcpy(&context->contract_address_received[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
 static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *context) {
- 
     if (context->go_to_offset == 1) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
             return;
@@ -86,7 +85,7 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
             context->next_param = PATH_LENGTH;
             context->skip++;
             break;
-        case PATH_LENGTH:            
+        case PATH_LENGTH:
             context->array_len =
                 U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_len));
             context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
@@ -95,26 +94,25 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
         case CALL_DATA:
 
             // Parse Second ABI Encoded Input Data
-            if(msg->parameterOffset == 132){
-                handle_method_cfa(msg,context);
-                handle_token_first_part(msg,context);
-            }            
-            if(msg->parameterOffset == 164){
-                handle_token_second_part(msg,context);
-                handle_sent_address_first_part(msg,context);
-            }            
-            if(msg->parameterOffset == 196){
-                handle_sent_address_second_part(msg,context);
-                handle_receive_address_first_part(msg,context);
+            if (msg->parameterOffset == 132) {
+                handle_method_cfa(msg, context);
+                handle_token_first_part(msg, context);
             }
-            if(msg->parameterOffset == 228){
-                handle_receive_address_second_part(msg,context);                
+            if (msg->parameterOffset == 164) {
+                handle_token_second_part(msg, context);
+                handle_sent_address_first_part(msg, context);
             }
-            
-            if( msg->parameterOffset >= (context->offset + context->array_len))
-            {
+            if (msg->parameterOffset == 196) {
+                handle_sent_address_second_part(msg, context);
+                handle_receive_address_first_part(msg, context);
+            }
+            if (msg->parameterOffset == 228) {
+                handle_receive_address_second_part(msg, context);
+            }
+
+            if (msg->parameterOffset >= (context->offset + context->array_len)) {
                 context->next_param = NONE;
-            }else{
+            } else {
                 context->next_param = CALL_DATA;
             }
             break;
@@ -137,7 +135,6 @@ void handle_provide_parameter(void *parameters) {
         // Skip this step, and don't forget to decrease skipping counter.
         context->skip--;
     } else {
-        
         switch (context->selectorIndex) {
             case DOWNGRADE:
             case DOWNGRADE_TO_ETH:

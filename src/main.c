@@ -91,11 +91,10 @@ const super_token_ticker_t SUPER_TOKEN_COLLECTION[NUM_SUPER_TOKEN_COLLECTION] = 
      "MATICx "}};
 
 const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION] = {
-  {{0x00,0x00,0x00,0x00},"Start Stream"},  //
-  {{0x00,0x00,0x00,0x00},"Update Steam"}, //
-  {{0xb4,0xb3,0x33,0xc6},"Stop Stream"},   // b4 b3 33 c6 
+    {{0x00, 0x00, 0x00, 0x00}, "Start Stream"},  //
+    {{0x00, 0x00, 0x00, 0x00}, "Update Steam"},  //
+    {{0xb4, 0xb3, 0x33, 0xc6}, "Stop Stream"},   // b4 b3 33 c6
 };
-
 
 const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION] = {
     {{0x27, 0xc7, 0xd0, 0x67, 0xa0, 0xc1, 0x43, 0x99, 0x0e, 0xc6,

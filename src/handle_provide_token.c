@@ -54,7 +54,6 @@ void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     }
 }
 
-
 void handle_received_address(ethPluginProvideToken_t *msg, context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
@@ -79,7 +78,7 @@ void handle_provide_token(void *parameters) {
             handle_upgrade_tokens(msg, context);
             break;
         case CALL_AGREEMENT:
-            handle_cfa_tokens(msg,context);
+            handle_cfa_tokens(msg, context);
             break;
         default:
             break;
