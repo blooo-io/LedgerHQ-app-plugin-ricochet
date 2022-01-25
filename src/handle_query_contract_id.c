@@ -23,6 +23,7 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->version, "Downgrade", msg->versionLength);
             break;
         case CALL_AGREEMENT:
+        case BATCH_CALL:
             handle_init_cfa_screen(msg, context);
             break;
         case UPGRADE:

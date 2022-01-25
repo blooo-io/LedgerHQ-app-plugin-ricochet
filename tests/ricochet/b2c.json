@@ -137,6 +137,11 @@
                     "erc20OfInterest": [],
                     "method": "callAgreement",
                     "plugin": "Ricochet"
+                },
+                "0x6ad3ca7d": {
+                    "erc20OfInterest": [],
+                    "method": "batchCall",
+                    "plugin": "Ricochet"
                 }
             }
         }

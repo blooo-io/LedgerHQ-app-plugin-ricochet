@@ -4,7 +4,7 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
-#define NUM_SELECTORS        5
+#define NUM_SELECTORS        6
 #define PLUGIN_NAME          "Ricochet"
 #define SELECTOR_SIZE        4
 #define TOKEN_FOUND          1 << 1
@@ -19,16 +19,28 @@
 #define NUM_CONTRACT_ADDRESS_COLLECTION 15
 #define NUM_CFA_METHOD_COLLECTION       3
 
-typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, CALL_AGREEMENT, UPGRADE, UPGRADE_TO_ETH } selector_t;
+typedef enum {
+    DOWNGRADE,
+    DOWNGRADE_TO_ETH,
+    CALL_AGREEMENT,
+    UPGRADE,
+    UPGRADE_TO_ETH,
+    BATCH_CALL
+} selector_t;
 
 // Enumeration used to parse the smart contract data.
-#define AMOUNT          0
-#define NONE            1
-#define AGREEMENT_CLASS 2
-#define PATH_OFFSET     3
-#define USER_DATA       4
-#define PATH_LENGTH     5
-#define CALL_DATA       6
+#define AMOUNT               0
+#define NONE                 1
+#define AGREEMENT_CLASS      2
+#define PATH_OFFSET          3
+#define USER_DATA            4
+#define PATH_LENGTH          5
+#define CALL_DATA            6
+#define CONTRACT_PATH_OFFSET 7
+#define OPERATION_TYPE       8
+#define TARGET               9
+#define BYTES_ARRAY_LEN      10
+#define INPUT_DATA           11
 
 typedef enum { SEND_SCREEN, RECEIVE_SCREEN, ERROR } screens_t;
 

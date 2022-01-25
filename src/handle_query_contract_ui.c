@@ -61,6 +61,44 @@ static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
+static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "From", msg->titleLength);
+
+    contract_address_ticker_t *currentTicker = NULL;
+
+    for (uint8_t i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+        currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
+        if (compare_array(currentTicker->contract_address,
+                          context->contract_address_received,
+                          ADDRESS_LENGTH) == 0) {
+            strlcpy(context->ticker_sent,
+                    (char *) currentTicker->ticker_sent,
+                    sizeof(context->ticker_sent));
+            break;
+        }
+    }
+    strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
+}
+
+static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "To", msg->titleLength);
+
+    contract_address_ticker_t *currentTicker = NULL;
+
+    for (uint8_t i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+        currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
+        if (compare_array(currentTicker->contract_address,
+                          context->contract_address_received,
+                          ADDRESS_LENGTH) == 0) {
+            strlcpy(context->ticker_received,
+                    (char *) currentTicker->ticker_received,
+                    sizeof(context->ticker_received));
+            break;
+        }
+    }
+    strlcpy(msg->msg, context->ticker_received, msg->msgLength);
+}
+
 static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
@@ -82,26 +120,6 @@ static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t 
                    msg->msg,
                    msg->msgLength);
 }
-
-// static void set_distribute_received_ui(ethQueryContractUI_t *msg, context_t *context) {
-//     strlcpy(msg->title, "Receive", msg->titleLength);
-
-//     uint8_t i;
-//     contract_address_ticker *currentTicker = NULL;
-
-//     for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
-//         currentTicker = (contract_address_ticker *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
-//         if (compare_array(currentTicker->contract_address,
-//                           msg->pluginSharedRO->txContent->destination,
-//                           ADDRESS_LENGTH) == 0) {
-//             strlcpy(context->ticker_received,
-//                     (char *) currentTicker->ticker_received,
-//                     sizeof(context->ticker_received));
-//             break;
-//         }
-//     }
-//     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
-// }
 
 static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
@@ -158,8 +176,6 @@ void handle_query_contract_ui(void *parameters) {
             }
             break;
         case CALL_AGREEMENT:
-            PRINTF("CALL_AGREEMENT: QUERY CONTRACT UI\n");
-
             switch (screen) {
                 case SEND_SCREEN:
                     set_cfa_from_ui(msg, context);
@@ -186,6 +202,19 @@ void handle_query_contract_ui(void *parameters) {
                     return;
             }
             break;
+
+        case BATCH_CALL:
+            switch (screen) {
+                case SEND_SCREEN:
+                    set_batch_call_from_ui(msg, context);
+                    break;
+                case RECEIVE_SCREEN:
+                    set_batch_call_to_ui(msg, context);
+                    break;
+                default:
+                    break;
+            }
+
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

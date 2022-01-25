@@ -92,29 +92,95 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
             context->next_param = CALL_DATA;
             break;
         case CALL_DATA:
+            // Parse Second Level ABI Encoded Input Data
 
-            // Parse Second ABI Encoded Input Data
-            if (msg->parameterOffset == 132) {
+            if (msg->parameterOffset == context->offset + SELECTOR_SIZE) {
                 handle_method_cfa(msg, context);
                 handle_token_first_part(msg, context);
-            }
-            if (msg->parameterOffset == 164) {
+            } else if (msg->parameterOffset == context->offset + SELECTOR_SIZE + PARAMETER_LENGTH) {
                 handle_token_second_part(msg, context);
                 handle_sent_address_first_part(msg, context);
-            }
-            if (msg->parameterOffset == 196) {
+            } else if (msg->parameterOffset ==
+                       context->offset + SELECTOR_SIZE + 2 * PARAMETER_LENGTH) {
                 handle_sent_address_second_part(msg, context);
                 handle_receive_address_first_part(msg, context);
-            }
-            if (msg->parameterOffset == 228) {
+            } else if (msg->parameterOffset ==
+                       context->offset + SELECTOR_SIZE + 3 * PARAMETER_LENGTH) {
                 handle_receive_address_second_part(msg, context);
+                context->next_param = NONE;
+                break;
             }
 
-            if (msg->parameterOffset >= (context->offset + context->array_len)) {
+            context->next_param = CALL_DATA;
+            break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+void handle_batch_call(ethPluginProvideParameter_t *msg, context_t *context) {
+    if (context->go_to_offset == 1) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = 0;
+    }
+
+    switch (context->next_param) {
+        case PATH_OFFSET:
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset));
+            context->next_param = PATH_LENGTH;
+            break;
+        case PATH_LENGTH:
+            context->array_len =
+                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_len));
+            context->offset =
+                msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH * context->array_len;
+            context->go_to_offset = 1;
+            context->next_param = CONTRACT_PATH_OFFSET;
+            break;
+        case CONTRACT_PATH_OFFSET:
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset)) +
+                              PARAMETER_LENGTH * 2;
+            context->go_to_offset = 1;
+            context->next_param = OPERATION_TYPE;
+            break;
+
+        case OPERATION_TYPE:
+            context->next_param = TARGET;
+            break;
+        case TARGET:
+            context->next_param = BYTES_ARRAY_LEN;
+            // we pass the standard structural fields from secondary abi encoding (non-dynamic)
+            context->offset = msg->parameterOffset - SELECTOR_SIZE + 5 * PARAMETER_LENGTH;
+            context->go_to_offset = 1;
+            break;
+
+        case BYTES_ARRAY_LEN:
+            context->array_len =
+                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_len));
+            context->next_param = INPUT_DATA;
+            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
+            break;
+        case INPUT_DATA:
+            if (msg->parameterOffset == context->offset + SELECTOR_SIZE) {
+                // Handle method &firstpart
+                handle_method_cfa(msg, context);
+                handle_sent_address_first_part(msg, context);
+            } else if (msg->parameterOffset == context->offset + SELECTOR_SIZE + PARAMETER_LENGTH) {
+                handle_sent_address_second_part(msg, context);
+                handle_receive_address_first_part(msg, context);
+            } else if (msg->parameterOffset ==
+                       context->offset + SELECTOR_SIZE + 2 * PARAMETER_LENGTH) {
+                handle_receive_address_second_part(msg, context);
                 context->next_param = NONE;
-            } else {
-                context->next_param = CALL_DATA;
+                break;
             }
+            context->next_param = INPUT_DATA;
             break;
         case NONE:
             break;
@@ -143,6 +209,9 @@ void handle_provide_parameter(void *parameters) {
                 break;
             case CALL_AGREEMENT:
                 handle_call_agreement(msg, context);
+                break;
+            case BATCH_CALL:
+                handle_batch_call(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

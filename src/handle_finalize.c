@@ -1,5 +1,25 @@
 #include "ricochet_plugin.h"
 
+void handle_sent_address_lookup(ethPluginFinalize_t *msg, context_t *context) {
+    if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+        msg->tokenLookup1 = context->contract_address_sent;
+        PRINTF("Setting address sent to: %.*H\n", ADDRESS_LENGTH, context->contract_address_sent);
+    } else {
+        msg->tokenLookup1 = NULL;
+    }
+}
+
+void handle_receive_address_lookup(ethPluginFinalize_t *msg, context_t *context) {
+    if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
+        msg->tokenLookup2 = context->contract_address_received;
+        PRINTF("Setting address received to: %.*H\n",
+               ADDRESS_LENGTH,
+               context->contract_address_received);
+    } else {
+        msg->tokenLookup2 = NULL;
+    }
+}
+
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
@@ -10,35 +30,16 @@ void handle_finalize(void *parameters) {
         switch (context->selectorIndex) {
             case DOWNGRADE:
             case DOWNGRADE_TO_ETH:
-                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_received)) {
-                    msg->tokenLookup1 = context->contract_address_received;
-                    PRINTF("Setting address received to: %.*H\n",
-                           ADDRESS_LENGTH,
-                           context->contract_address_received);
-                } else {
-                    msg->tokenLookup1 = NULL;
-                }
+                handle_receive_address_lookup(msg, context);
                 break;
             case UPGRADE:
             case UPGRADE_TO_ETH:
-                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-                    msg->tokenLookup1 = context->contract_address_sent;
-                    PRINTF("Setting address sent to: %.*H\n",
-                           ADDRESS_LENGTH,
-                           context->contract_address_sent);
-                } else {
-                    msg->tokenLookup1 = NULL;
-                }
-                break;
             case CALL_AGREEMENT:
-                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
-                    msg->tokenLookup1 = context->contract_address_sent;
-                    PRINTF("Setting address sent to: %.*H\n",
-                           ADDRESS_LENGTH,
-                           context->contract_address_sent);
-                } else {
-                    msg->tokenLookup1 = NULL;
-                }
+                handle_sent_address_lookup(msg, context);
+                break;
+            case BATCH_CALL:
+                handle_sent_address_lookup(msg, context);
+                handle_receive_address_lookup(msg, context);
                 break;
             default:
                 PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);

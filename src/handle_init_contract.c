@@ -59,6 +59,9 @@ void handle_init_contract(void *parameters) {
         case CALL_AGREEMENT:
             context->next_param = AGREEMENT_CLASS;
             break;
+        case BATCH_CALL:
+            context->next_param = PATH_OFFSET;
+            break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

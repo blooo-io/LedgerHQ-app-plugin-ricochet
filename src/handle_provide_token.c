@@ -80,6 +80,8 @@ void handle_provide_token(void *parameters) {
         case CALL_AGREEMENT:
             handle_cfa_tokens(msg, context);
             break;
+        case BATCH_CALL:
+            break;
         default:
             break;
     }
