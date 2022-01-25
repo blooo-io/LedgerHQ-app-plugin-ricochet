@@ -1,49 +1,28 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import { waitForAppScreen, zemu, genericTx, SPECULOS_ADDRESS, RANDOM_ADDRESS, txFromEtherscan } from './test.fixture';
-import { ethers } from "ethers";
-import { parseEther, parseUnits } from "ethers/lib/utils";
+import { processDowngradeToEthTest } from './test.fixture';
 
-var contractAddr = "0x0000000000000000000000000000000000001010";
-const steps = 6;
 const pluginName = "ricochet";
-const transactionUploadDelay = 5000;
+const transactionUploadDelay = 10000;
+const signedPlugin = false;
 
-test('[Nano S] Downgrade', zemu("nanos", async (sim, eth) => {
-    //for (var key in contractAddrs) {
-    const label = "nanos_downgrade_to_eth";
-    const abi_path = `../${pluginName}/abis/` + contractAddr + '.json';
-    const abi = require(abi_path);
-    const contract = new ethers.Contract(contractAddr, abi);
-    // URL 
+const devices = [
+    {
+        name: "nanos",
+        label: "Nano S",
+        steps: 6, // <= Define the number of steps for this test case and this device
+    },
+    // {
+    //   name: "nanox",
+    //   label: "Nano X",
+    //   steps: 5, // <= Define the number of steps for this test case and this device
+    // },
+];
+var contractAddrs = {
+    "MATICx": "0x3ad736904e9e65189c3000c7dd2c8ac8bb7cd4e3",
+};
 
-    // Constants used to create the transaction
-    const amount = 10;
 
-    const { data } = await contract.populateTransaction['downgradeToETH(uint256)'](amount);
-
-    // Get the generic transaction template
-    let unsignedTx = genericTx;
-    // Modify `to` to make it interact with the contract
-    unsignedTx.to = contractAddr;
-    // Modify the attached data
-    unsignedTx.data = data;
-    // Modify the number of ETH sent
-    unsignedTx.value = parseEther("0.1");
-
-    // Create serializedTx and remove the "0x" prefix
-    const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
-
-    const tx = eth.signTransaction(
-        "44'/60'/0'/0/0",
-        serializedTx
+for (var key in contractAddrs) {
+    devices.forEach((device) =>
+        processDowngradeToEthTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin)
     );
-
-    await sim.waitUntilScreenIsNot(
-        sim.getMainMenuSnapshot(),
-        transactionUploadDelay
-    );
-    await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
-
-    await tx;
-}));
+};

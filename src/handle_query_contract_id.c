@@ -1,5 +1,17 @@
 #include "ricochet_plugin.h"
 
+void handle_init_cfa_screen(ethQueryContractID_t *msg, context_t *context) {
+    cfa_method_t *cfaMethod = NULL;
+
+    for (uint8_t i = 0; i < NUM_CFA_METHOD_COLLECTION; i++) {
+        cfaMethod = (cfa_method_t *) PIC(&CFA_METHOD_COLLECTION[i]);
+        if (compare_array(cfaMethod->method, context->method_cfa, SELECTOR_SIZE) == 0) {
+            strlcpy(msg->version, (char *) cfaMethod->method_name, msg->versionLength);
+            break;
+        }
+    }
+}
+
 void handle_query_contract_id(void *parameters) {
     ethQueryContractID_t *msg = (ethQueryContractID_t *) parameters;
     const context_t *context = (context_t *) msg->pluginContext;
@@ -7,15 +19,15 @@ void handle_query_contract_id(void *parameters) {
     strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
     switch (context->selectorIndex) {
         case DOWNGRADE:
+        case DOWNGRADE_TO_ETH:
             strlcpy(msg->version, "Downgrade", msg->versionLength);
             break;
-        case DOWNGRADE_TO_ETH:
-            strlcpy(msg->version, "DowngradeToETH", msg->versionLength);
-            break;
-        case DISTRIBUTE:
-            strlcpy(msg->version, "Distribute", msg->versionLength);
+        case CALL_AGREEMENT:
+        case BATCH_CALL:
+            handle_init_cfa_screen(msg, context);
             break;
         case UPGRADE:
+        case UPGRADE_TO_ETH:
             strlcpy(msg->version, "Upgrade", msg->versionLength);
             break;
         default:
