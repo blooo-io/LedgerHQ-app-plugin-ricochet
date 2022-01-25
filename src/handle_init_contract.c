@@ -56,8 +56,8 @@ void handle_init_contract(void *parameters) {
             handle_amount_value(msg, context);
             context->next_param = NONE;
             break;
-        case DISTRIBUTE:
-            context->next_param = NONE;
+        case CALL_AGREEMENT:
+            context->next_param = AGREEMENT_CLASS;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);

@@ -40,14 +40,14 @@ static const uint8_t DOWNGRADE_SELECTOR[SELECTOR_SIZE] = {0x11, 0xbc, 0xc8, 0x1e
 // Selector: 0x160e8be3
 static const uint8_t DOWNGRADE_TO_ETH_SELECTOR[SELECTOR_SIZE] = {0x16, 0x0e, 0x8b, 0xe3};
 
-// Function: distribute()
-// Selector: 0xe4fc6b6d
-static const uint8_t DISTRIBUTE_SELECTOR[SELECTOR_SIZE] = {0xe4, 0xfc, 0x6b, 0x6d};
+// Function: callAgreement(address agreementClass, bytes callData, bytes userData)
+// MethodID: 0x39255d5b
+static const uint8_t CALL_AGREEMENT_SELECTOR[SELECTOR_SIZE] = {0x39, 0x25, 0x5d, 0x5b};
 
 // Array of all the different ricochet selectors.
 const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS] = {DOWNGRADE_SELECTOR,
                                                           DOWNGRADE_TO_ETH_SELECTOR,
-                                                          DISTRIBUTE_SELECTOR,
+                                                          CALL_AGREEMENT_SELECTOR,
                                                           UPGRADE_SELECTOR,
                                                           UPGRADE_TO_ETH_SELECTOR};
 
@@ -90,7 +90,14 @@ const super_token_ticker_t SUPER_TOKEN_COLLECTION[NUM_SUPER_TOKEN_COLLECTION] = 
      "MATIC ",
      "MATICx "}};
 
-const contract_address_ticker CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION] = {
+const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION] = {
+  {{0x00,0x00,0x00,0x00},"Start Stream"},  //
+  {{0x00,0x00,0x00,0x00},"Update Steam"}, //
+  {{0xb4,0xb3,0x33,0xc6},"Stop Stream"},   // b4 b3 33 c6 
+};
+
+
+const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION] = {
     {{0x27, 0xc7, 0xd0, 0x67, 0xa0, 0xc1, 0x43, 0x99, 0x0e, 0xc6,
       0xed, 0x27, 0x72, 0xe7, 0x13, 0x6c, 0xfc, 0xfa, 0xec, 0xd6},
      "DAIx",

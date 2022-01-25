@@ -13,15 +13,22 @@
 #define TOKEN_SENT_FOUND     1
 #define TOKEN_RECEIVED_FOUND 1 << 1
 #define DEFAULT_TICKER       "MATIC"
+#define METHOD_NAME_LENGTH   20
 
 #define NUM_SUPER_TOKEN_COLLECTION      9
 #define NUM_CONTRACT_ADDRESS_COLLECTION 15
+#define NUM_CFA_METHOD_COLLECTION       3
 
-typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, DISTRIBUTE, UPGRADE, UPGRADE_TO_ETH } selector_t;
+typedef enum { DOWNGRADE, DOWNGRADE_TO_ETH, CALL_AGREEMENT, UPGRADE, UPGRADE_TO_ETH } selector_t;
 
 // Enumeration used to parse the smart contract data.
-#define AMOUNT 0
-#define NONE   1
+#define AMOUNT          0
+#define NONE            1
+#define AGREEMENT_CLASS 2
+#define PATH_OFFSET     3
+#define USER_DATA       4
+#define PATH_LENGTH     5
+#define CALL_DATA       6
 
 typedef enum { SEND_SCREEN, RECEIVE_SCREEN, ERROR } screens_t;
 
@@ -35,10 +42,6 @@ extern const uint8_t RICOCHET_ETH_ADDRESS[ADDRESS_LENGTH];
 
 // Adress 0x00000... used to indicate that the beneficiary is the sender.
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
-
-extern const uint8_t DAI_TEST[ADDRESS_LENGTH];
-
-extern const uint8_t DAIX_TEST[ADDRESS_LENGTH];
 
 // Returns 1 if corresponding address is the Ricochet address for the chain token (ETH, BNB, MATIC,
 // etc.. are 0xeeeee...).
@@ -58,18 +61,29 @@ typedef struct contract_address_ticker {
     char ticker_sent[MAX_TICKER_LEN];
     char ticker_received[MAX_TICKER_LEN];
 
-} contract_address_ticker;
-extern const contract_address_ticker CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION];
+} contract_address_ticker_t;
+extern const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION];
+
+
+typedef struct cfa_method {
+    uint8_t method[SELECTOR_SIZE];
+    char method_name[METHOD_NAME_LENGTH];
+} cfa_method_t;
+extern const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION];
+
 
 typedef struct context_t {
     // For display.
     uint8_t amount[INT256_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
+    uint8_t token_address[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
     char ticker_received[MAX_TICKER_LEN];
+    uint8_t method_cfa[SELECTOR_SIZE];
 
     uint16_t offset;
+    uint16_t go_to_offset;
     uint16_t checkpoint;
     uint8_t next_param;
     uint8_t tokens_found;
@@ -77,7 +91,7 @@ typedef struct context_t {
     uint8_t decimals;
     uint8_t decimals_received;
     uint8_t selectorIndex;
-    uint8_t array_len;
+    uint16_t array_len;
     uint8_t skip;
 } context_t;
 

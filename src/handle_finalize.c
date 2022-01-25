@@ -30,8 +30,15 @@ void handle_finalize(void *parameters) {
                     msg->tokenLookup1 = NULL;
                 }
                 break;
-            case DISTRIBUTE:
-                msg->tokenLookup1 = NULL;
+            case CALL_AGREEMENT:
+                if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+                    msg->tokenLookup1 = context->contract_address_sent;
+                    PRINTF("Setting address sent to: %.*H\n",
+                           ADDRESS_LENGTH,
+                           context->contract_address_sent);
+                } else {
+                    msg->tokenLookup1 = NULL;
+                }
                 break;
             default:
                 PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);

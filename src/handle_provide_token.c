@@ -36,6 +36,25 @@ void handle_upgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     }
 }
 
+void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
+    contract_address_ticker_t *currentContract = NULL;
+    for (uint8_t i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+        currentContract = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
+        if (memcmp(currentContract->contract_address,
+                   context->contract_address_received,
+                   ADDRESS_LENGTH) == 0) {
+            strlcpy(context->ticker_sent,
+                    (char *) currentContract->ticker_sent,
+                    sizeof(context->ticker_sent));
+            strlcpy(context->ticker_received,
+                    (char *) currentContract->ticker_received,
+                    sizeof(context->ticker_received));
+            break;
+        }
+    }
+}
+
+
 void handle_received_address(ethPluginProvideToken_t *msg, context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
@@ -47,17 +66,20 @@ void handle_provide_token(void *parameters) {
     ethPluginProvideToken_t *msg = (ethPluginProvideToken_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
 
-    handle_received_address(msg, context);
-
     switch (context->selectorIndex) {
         case DOWNGRADE:
         case DOWNGRADE_TO_ETH:
             context->decimals = DEFAULT_DECIMAL;
+            handle_received_address(msg, context);
             handle_downgrade_tokens(msg, context);
             break;
         case UPGRADE:
         case UPGRADE_TO_ETH:
+            handle_received_address(msg, context);
             handle_upgrade_tokens(msg, context);
+            break;
+        case CALL_AGREEMENT:
+            handle_cfa_tokens(msg,context);
             break;
         default:
             break;
