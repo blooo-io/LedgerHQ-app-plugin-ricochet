@@ -96,9 +96,9 @@ const super_token_ticker_t SUPER_TOKEN_COLLECTION[NUM_SUPER_TOKEN_COLLECTION] = 
      "MATICx "}};
 
 const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION] = {
-    {{0x62, 0xfc, 0x30, 0x5e}, "Start Stream"},  // 62 fc 30 5e
-    {{0x00, 0x00, 0x00, 0x00}, "Update Steam"},  //
-    {{0xb4, 0xb3, 0x33, 0xc6}, "Stop Stream"},   // b4 b3 33 c6
+    {{0x62, 0xfc, 0x30, 0x5e}, "Start Stream", START_STREAM},   // 62 fc 30 5e
+    {{0x50, 0x20, 0x9a, 0x62}, "Update Steam", UPDATE_STREAM},  // 50 20 9a 62
+    {{0xb4, 0xb3, 0x33, 0xc6}, "Stop Stream", STOP_STREAM},     // b4 b3 33 c6
 };
 
 const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_ADDRESS_COLLECTION] = {

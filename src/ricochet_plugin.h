@@ -42,6 +42,10 @@ typedef enum {
 #define BYTES_ARRAY_LEN      10
 #define INPUT_DATA           11
 
+#define START_STREAM  0
+#define UPDATE_STREAM 1
+#define STOP_STREAM   2
+
 typedef enum { SEND_SCREEN, RECEIVE_SCREEN, ERROR } screens_t;
 
 extern const uint8_t *const RICOCHET_SELECTORS[NUM_SELECTORS];
@@ -79,6 +83,7 @@ extern const contract_address_ticker_t CONTRACT_ADDRESS_COLLECTION[NUM_CONTRACT_
 typedef struct cfa_method {
     uint8_t method[SELECTOR_SIZE];
     char method_name[METHOD_NAME_LENGTH];
+    uint8_t method_id;
 } cfa_method_t;
 extern const cfa_method_t CFA_METHOD_COLLECTION[NUM_CFA_METHOD_COLLECTION];
 
@@ -91,6 +96,7 @@ typedef struct context_t {
     char ticker_sent[MAX_TICKER_LEN];
     char ticker_received[MAX_TICKER_LEN];
     uint8_t method_cfa[SELECTOR_SIZE];
+    uint8_t method_id;
 
     uint16_t offset;
     uint16_t go_to_offset;

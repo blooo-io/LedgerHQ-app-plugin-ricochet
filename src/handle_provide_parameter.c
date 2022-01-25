@@ -23,6 +23,16 @@ static void handle_agreement_class(const ethPluginProvideParameter_t *msg, conte
 static void handle_method_cfa(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->method_cfa, 0, sizeof(context->method_cfa));
     memcpy(context->method_cfa, &msg->parameter[0], sizeof(context->method_cfa));
+
+    cfa_method_t *cfaMethod = NULL;
+
+    for (uint8_t i = 0; i < NUM_CFA_METHOD_COLLECTION; i++) {
+        cfaMethod = (cfa_method_t *) PIC(&CFA_METHOD_COLLECTION[i]);
+        if (compare_array(cfaMethod->method, context->method_cfa, SELECTOR_SIZE) == 0) {
+            context->method_id = cfaMethod->method_id;
+            break;
+        }
+    }
 }
 
 static void handle_token_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
@@ -90,6 +100,9 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
                 U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_len));
             context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
             context->next_param = CALL_DATA;
+
+            PRINTF("RNE: ARRAY_LEN:%d\n", context->array_len);
+
             break;
         case CALL_DATA:
             // Parse Second Level ABI Encoded Input Data
@@ -103,10 +116,16 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 2 * PARAMETER_LENGTH) {
                 handle_sent_address_second_part(msg, context);
-                handle_receive_address_first_part(msg, context);
+
+                if (context->method_id == STOP_STREAM) {
+                    handle_receive_address_first_part(msg, context);
+                }
+
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 3 * PARAMETER_LENGTH) {
-                handle_receive_address_second_part(msg, context);
+                if (context->method_id == STOP_STREAM) {
+                    handle_receive_address_second_part(msg, context);
+                }
                 context->next_param = NONE;
                 break;
             }

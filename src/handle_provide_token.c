@@ -38,11 +38,18 @@ void handle_upgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
 
 void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     contract_address_ticker_t *currentContract = NULL;
+
     for (uint8_t i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
         currentContract = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
-        if (memcmp(currentContract->contract_address,
-                   context->contract_address_received,
-                   ADDRESS_LENGTH) == 0) {
+
+        if ((memcmp(currentContract->contract_address,
+                    context->contract_address_received,
+                    ADDRESS_LENGTH) == 0 &&
+             context->method_id == STOP_STREAM) ||
+            memcmp(currentContract->contract_address,
+                   context->contract_address_sent,
+                   ADDRESS_LENGTH) == 0 &&
+                context->method_id == UPDATE_STREAM) {
             strlcpy(context->ticker_sent,
                     (char *) currentContract->ticker_sent,
                     sizeof(context->ticker_sent));
