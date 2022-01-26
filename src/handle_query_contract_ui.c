@@ -15,7 +15,7 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
 
     amountToString(context->amount,
                    sizeof(context->amount),
-                   0,
+                   DEFAULT_DECIMAL,
                    context->ticker_sent,
                    msg->msg,
                    msg->msgLength);
@@ -125,7 +125,7 @@ static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
     amountToString(context->amount,
                    sizeof(context->amount),
-                   0,
+                   DEFAULT_DECIMAL,
                    context->ticker_received,
                    msg->msg,
                    msg->msgLength);

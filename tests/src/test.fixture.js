@@ -138,7 +138,7 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
     // URL 
 
     // Constants used to create the transaction
-    const amount = 10;
+    const amount = parseUnits("10",18);
 
     const { data } = await contract.populateTransaction['downgrade(uint256)'](amount);
 
@@ -190,7 +190,7 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
     // URL 
 
     // Constants used to create the transaction
-    const amount = 312;
+    const amount = parseUnits("312",18);
 
     const { data } = await contract.populateTransaction['downgradeToETH(uint256)'](amount);
 
@@ -243,7 +243,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // URL 
 
     // Constants used to create the transaction
-    const amount = 10;
+    const amount = parseUnits("10",18);
 
     const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
 
@@ -294,7 +294,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // URL 
 
     // Constants used to create the transaction
-    const amount = "5.213";
+    const amount = parseUnits("5.213",18);
 
     const { data } = await contract.populateTransaction['upgradeByETH()']();
 
@@ -305,7 +305,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // Modify the attached data
     unsignedTx.data = data;
     // Modify the number of ETH sent
-    unsignedTx.value = parseEther(amount);
+    unsignedTx.value = amount;
 
     // Create serializedTx and remove the "0x" prefix
     const serializedTx = ethers.utils.serializeTransaction(unsignedTx).slice(2);
