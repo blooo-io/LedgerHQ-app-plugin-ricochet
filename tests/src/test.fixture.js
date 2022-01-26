@@ -23,7 +23,7 @@ const NANOX_PLUGIN_PATH = Resolve("elfs/ricochet_nanox.elf");
 const NANOS_PLUGIN = { Ricochet: NANOS_PLUGIN_PATH };
 const NANOX_PLUGIN = { Ricochet: NANOX_PLUGIN_PATH };
 
-const ricochetJSON = generate_plugin_config();
+
 
 const SPECULOS_ADDRESS = "0xFE984369CE3919AA7BB4F431082D027B4F8ED70C";
 const RANDOM_ADDRESS = "0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj";
@@ -82,7 +82,7 @@ function txFromEtherscan(rawTx) {
  * @param {boolean} signed the plugin is already signed 
  * @returns {Promise}
  */
-function zemu(device, func, signed = false) {
+function zemu(device, func, signed = false, testNetwork) {
   return async () => {
     jest.setTimeout(TIMEOUT);
     let eth_path;
@@ -109,7 +109,7 @@ function zemu(device, func, signed = false) {
       if (!signed) {
         eth.setPluginsLoadConfig({
           baseURL: null,
-          extraPlugins: ricochetJSON,
+          extraPlugins: generate_plugin_config(testNetwork),
         });
       }
       await func(sim, eth);
@@ -128,17 +128,17 @@ function zemu(device, func, signed = false) {
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
-function processDowngradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Downgrade '+ token, zemu(device.name, async (sim, eth) => {
+function processDowngradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Downgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
-    const label = device.name + "_downgrade_" + token + "";
-    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const label = device.name + "_downgrade_" + token;
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + contractAddrs[token] + '.abi.json';
     const abi = require(abi_path);
     const contract = new ethers.Contract(contractAddrs[token], abi);
     // URL 
 
     // Constants used to create the transaction
-    const amount = parseUnits("10",18);
+    const amount = parseUnits("10", 18);
 
     const { data } = await contract.populateTransaction['downgrade(uint256)'](amount);
 
@@ -168,7 +168,7 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
 
     await tx;
     //}
-  }, signed));
+  }, signed, testNetwork));
 }
 
 
@@ -180,17 +180,17 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processDowngradeToEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Downgrade ' + token, zemu(device.name, async (sim, eth) => {
+function processDowngradeToEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Downgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
-    const label = device.name + "_downgrade_" + token + "";
-    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const label = device.name + "_downgrade_" + token;
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + contractAddrs[token] + '.abi.json';
     const abi = require(abi_path);
     const contract = new ethers.Contract(contractAddrs[token], abi);
     // URL 
 
     // Constants used to create the transaction
-    const amount = parseUnits("312",18);
+    const amount = parseUnits("312", 18);
 
     const { data } = await contract.populateTransaction['downgradeToETH(uint256)'](amount);
 
@@ -220,7 +220,7 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
 
     await tx;
     //}
-  }, signed));
+  }, signed, testNetwork));
 }
 
 
@@ -233,17 +233,17 @@ function processDowngradeTest(device, pluginName, transactionUploadDelay, token,
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
-function processUpgradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
+function processUpgradeTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
-    const label = device.name + "_upgrade_" + token + "";
-    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const label = device.name + "_upgrade_" + token;
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + contractAddrs[token] + '.abi.json';
     const abi = require(abi_path);
     const contract = new ethers.Contract(contractAddrs[token], abi);
     // URL 
 
     // Constants used to create the transaction
-    const amount = parseUnits("10",18);
+    const amount = parseUnits("10", 18);
 
     const { data } = await contract.populateTransaction['upgrade(uint256)'](amount);
 
@@ -273,7 +273,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
 
     await tx;
     //}
-  }, signed));
+  }, signed, testNetwork));
 }
 
 /**
@@ -284,17 +284,17 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processUpgradeByEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
+function processUpgradeByEthTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Upgrade ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
-    const label = device.name + "_upgrade_" + token + "";
-    const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
+    const label = device.name + "_upgrade_" + token;
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + contractAddrs[token] + '.abi.json';
     const abi = require(abi_path);
     const contract = new ethers.Contract(contractAddrs[token], abi);
     // URL 
 
     // Constants used to create the transaction
-    const amount = parseUnits("5.213",18);
+    const amount = parseUnits("5.213", 18);
 
     const { data } = await contract.populateTransaction['upgradeByETH()']();
 
@@ -324,7 +324,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
 
     await tx;
     //}
-  }, signed));
+  }, signed, testNetwork));
 }
 
 
@@ -337,13 +337,13 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processStopTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Stop ' + token, zemu(device.name, async (sim, eth) => {
+function processStopTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Stop ' + token, zemu(device.name, async (sim, eth) => {
     //for (var key in contractAddrs) {
     const label = device.name + "_stop_" + token;
-    // const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
-    // const abi = require(abi_path);
-    // const contract = new ethers.Contract(contractAddrs[token], abi);
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + `0x3e14dc1b13c488a8d5d310918780c983bd5982e7` + '.abi.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(`0x3e14dc1b13c488a8d5d310918780c983bd5982e7`, abi);
     // URL 
 
     // Constants used to create the transaction
@@ -376,7 +376,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
 
     await tx;
     //}
-  }, signed));
+  }, signed, testNetwork));
 }
 
 
@@ -388,12 +388,15 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processStartTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Start ' + token, zemu(device.name, async (sim, eth) => {
+function processStartTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Start ' + token, zemu(device.name, async (sim, eth) => {
+    
+    const address = `0x3e14dc1b13c488a8d5d310918780c983bd5982e7`;
+
     const label = device.name + "_start_" + token;
-    // const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
-    // const abi = require(abi_path);
-    // const contract = new ethers.Contract(contractAddrs[token], abi);
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + address + '.abi.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(address, abi);
     // URL 
 
     // Constants used to create the transaction
@@ -403,7 +406,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // Get the generic transaction template
     let unsignedTx = genericTx;
     // Modify `to` to make it interact with the contract
-    unsignedTx.to = "0x3e14dc1b13c488a8d5d310918780c983bd5982e7";
+    unsignedTx.to = address;
     // Modify the attached data
     unsignedTx.data = data;
     // Modify the number of ETH sent
@@ -424,7 +427,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     const steps = device.steps
     await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
     await tx;
-  }, signed));
+  }, signed,testNetwork));
 }
 
 
@@ -436,12 +439,15 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processEditTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Edit ' + token, zemu(device.name, async (sim, eth) => {
+function processEditTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false, testNetwork) {
+  test('[' + device.label + '] Edit ' + token, zemu(device.name, async (sim, eth) => {
+    
+    const address = `0x3e14dc1b13c488a8d5d310918780c983bd5982e7`;
+    
     const label = device.name + "_edit_" + token;
-    // const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
-    // const abi = require(abi_path);
-    // const contract = new ethers.Contract(contractAddrs[token], abi);
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + address + '.abi.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(address, abi);
     // URL 
 
     // Constants used to create the transaction
@@ -451,7 +457,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // Get the generic transaction template
     let unsignedTx = genericTx;
     // Modify `to` to make it interact with the contract
-    unsignedTx.to = "0x3e14dc1b13c488a8d5d310918780c983bd5982e7";
+    unsignedTx.to = address;
     // Modify the attached data
     unsignedTx.data = data;
     // Modify the number of ETH sent
@@ -472,7 +478,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     const steps = device.steps
     await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
     await tx;
-  }, signed));
+  }, signed, testNetwork));
 }
 
 
@@ -484,12 +490,15 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
  * @param {array} contractAddrs contracts address
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
- function processSecondStartTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false) {
-  test('['+device.label+'] Second Start ' + token, zemu(device.name, async (sim, eth) => {
+function processSecondStartTest(device, pluginName, transactionUploadDelay, token, contractAddrs, signed = false,testNetwork) {
+  test('[' + device.label + '] Second Start ' + token, zemu(device.name, async (sim, eth) => {
+    
+    const address = `0x3e14dc1b13c488a8d5d310918780c983bd5982e7`;
+
     const label = device.name + "_second_start_" + token;
-    // const abi_path = `../${pluginName}/abis/` + contractAddrs[token] + '.json';
-    // const abi = require(abi_path);
-    // const contract = new ethers.Contract(contractAddrs[token], abi);
+    const abi_path = `../networks/${testNetwork}/${pluginName}/abis/` + address + '.abi.json';
+    const abi = require(abi_path);
+    const contract = new ethers.Contract(address, abi);
     // URL 
 
     // Constants used to create the transaction
@@ -499,7 +508,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     // Get the generic transaction template
     let unsignedTx = genericTx;
     // Modify `to` to make it interact with the contract
-    unsignedTx.to = "0x3e14dc1b13c488a8d5d310918780c983bd5982e7";
+    unsignedTx.to = address;
     // Modify the attached data
     unsignedTx.data = data;
     // Modify the number of ETH sent
@@ -520,7 +529,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     const steps = device.steps
     await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
     await tx;
-  }, signed));
+  }, signed, testNetwork));
 }
 
 module.exports = {

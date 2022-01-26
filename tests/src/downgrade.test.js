@@ -3,6 +3,8 @@ import { processDowngradeTest } from './test.fixture';
 const pluginName = "ricochet";
 const transactionUploadDelay = 10000;
 const signedPlugin = false;
+const testNetwork = "polygon"; 
+
 
 const devices = [
     {
@@ -29,6 +31,6 @@ var contractAddrs = {
 
 for (var key in contractAddrs) {
     devices.forEach((device) =>
-        processDowngradeTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin)
+        processDowngradeTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin,testNetwork)
     );
 };

@@ -3,6 +3,8 @@ import { processSecondStartTest } from './test.fixture';
 const pluginName = "ricochet";
 const transactionUploadDelay = 5000;
 const signedPlugin = false;
+const testNetwork = "polygon";
+
 
 const devices = [
     {
@@ -36,6 +38,6 @@ var contractAddrs = {
 
 for (var key in contractAddrs) {
     devices.forEach((device) =>
-        processSecondStartTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin)
+        processSecondStartTest(device, pluginName, transactionUploadDelay, key, contractAddrs, signedPlugin, testNetwork)
     );
 };
