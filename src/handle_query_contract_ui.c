@@ -10,6 +10,27 @@ char compare_array(uint8_t a[], uint8_t b[], int size) {
     return 0;
 }
 
+static unsigned long long amountToDecimal(context_t *context, int size) {
+    uint8_t i;
+    long long int value = 0;
+
+    for (uint8_t i = 0; i < size; i++) {
+        value = value * 256 + context->amount[i];
+    }
+    return value;
+}
+
+static void decimalToAmount(unsigned long long value, context_t *context) {
+    uint8_t i = 0, rem;
+    memset(context->amount, 0, sizeof(context->amount));
+    do {
+        rem = (int) (value % 256);
+        value /= 256;
+        context->amount[sizeof(context->amount) - i - 1] = rem;
+        i++;
+    } while (value != 0);
+}
+
 static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
@@ -38,7 +59,23 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
             break;
         }
     }
-    strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
+
+    if (context->method_id != STOP_STREAM) {
+        unsigned long long value = amountToDecimal(context->amount, sizeof(context->amount));
+        value *= 2592000;  // switch from token per sec to token per month for UX only.
+        decimalToAmount(value, context);
+
+        amountToString(context->amount,
+                       sizeof(context->amount),
+                       DEFAULT_DECIMAL,
+                       context->ticker_sent,
+                       msg->msg,
+                       msg->msgLength);
+
+        strcat(msg->msg, " per month");
+    } else {
+        strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
+    }
 }
 
 static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -77,7 +114,20 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
             break;
         }
     }
-    strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
+
+    unsigned long long value = amountToDecimal(context->amount, sizeof(context->amount));
+    value *= 2592000;  // switch from token per sec to token per month for UX only.
+
+    decimalToAmount(value, context);
+
+    amountToString(context->amount,
+                   sizeof(context->amount),
+                   DEFAULT_DECIMAL,
+                   context->ticker_sent,
+                   msg->msg,
+                   msg->msgLength);
+
+    strcat(msg->msg, " per month");
 }
 
 static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) {
