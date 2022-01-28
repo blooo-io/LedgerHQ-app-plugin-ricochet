@@ -37,27 +37,12 @@ Smart contracts covered by this plugin are:
 |`IDLEx`	|`0xB63E38D21B31719e6dF314D3d2c351dF0D4a9162`|	`downgrade(amount)`|  `upgrade(amount)`|
 
 
-Dsitribute Smart Contracts
+Start/Stop/Edit Smart Contracts
 
-|Tokens|Contract Address	|Methods Distribute|
-|:---------------|:------------------|:------|
-|`DAI>>WETH	`|`0x27C7D067A0C143990EC6ed2772E7136Cfcfaecd6`	|`distribute()`|
-|`WETH>>DAI	`|`0x5786D3754443C0D3D1DdEA5bB550ccc476FdF11D`	|`distribute()`|
-|`USDC>>WBTC`|`0xe0A0ec8dee2f73943A6b731a2e11484916f45D44`	|`distribute()`|
-|`WBTC>>USDC`|`0x71f649EB05AA48cF8d92328D1C486B7d9fDbfF6b`	|`distribute()`|
-|`USDC>>WETH`|`0x8082Ab2f4E220dAd92689F3682F3e7a42b206B42`	|`distribute()`|
-|`WETH>>USDC`|`0x3941e2E89f7047E0AC7B9CcE18fBe90927a32100`	|`distribute()`|
-|`USDC>>MATIC`|`0xE093D8A4269CE5C91cD9389A0646bAdAB2c8D9A3`	|`distribute()`|
-|`MATIC>>USDC`|`0x93D2d0812C9856141B080e9Ef6E97c7A7b342d7F`	|`distribute()`|
-|`DAI>>MATIC`|`0xA152715dF800dB5926598917A6eF3702308bcB7e`	|`distribute()`|
-|`MATIC>>DAI`|`0x250efbB94De68dD165bD6c98e804E08153Eb91c6`	|`distribute()`|
-|`USDC>>MKR`|`0xC89583Fa7B84d81FE54c1339ce3fEb10De8B4C96`	|`distribute()`|
-|`MKR>>USDC`|`0xdc19ed26aD3a544e729B72B50b518a231cBAD9Ab`	|`distribute()`|
-|`DAI>>MKR`|`0x47de4Fd666373Ca4A793e2E0e7F995Ea7D3c9A29`	|`distribute()`|
-|`MKR>>DAI`|`0x94e5b18309066dd1E5aE97628afC9d4d7EB58161`	|`distribute()`|
-|`USDC>>IDLE`|`0xBe79a6fd39a8E8b0ff7E1af1Ea6E264699680584`	|`distribute()`|	
-
-
+|Contract Address	|Proxy Methods|
+|:---------------|:------------------|
+|`0x3e14dc1b13c488a8d5d310918780c983bd5982e7`|`callAgreement()`|
+|`0x3e14dc1b13c488a8d5d310918780c983bd5982e7`|`batchCall()`|
 
 
 
