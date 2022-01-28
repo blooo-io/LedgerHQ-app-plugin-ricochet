@@ -77,28 +77,16 @@ static void handle_receive_address_second_part(ethPluginProvideParameter_t *msg,
            SELECTOR_SIZE);
 }
 
-static void handle_flow_rate_first_part(ethPluginProvideParameter_t *msg,
-                                              context_t *context) {
+static void handle_flow_rate_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->amount, 0, sizeof(context->amount));
     memcpy(context->amount,
            &msg->parameter[PARAMETER_LENGTH - INT256_LENGTH + SELECTOR_SIZE],
            sizeof(context->amount) - SELECTOR_SIZE);
 }
 
-
-static void handle_flow_rate_second_part(ethPluginProvideParameter_t *msg,
-                                               context_t *context) {
-    memcpy(&context->amount[INT256_LENGTH - SELECTOR_SIZE],
-           &msg->parameter[0],
-           SELECTOR_SIZE);
+static void handle_flow_rate_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
+    memcpy(&context->amount[INT256_LENGTH - SELECTOR_SIZE], &msg->parameter[0], SELECTOR_SIZE);
 }
-
-
-
-
-
-
-
 
 static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *context) {
     if (context->go_to_offset == 1) {
@@ -136,7 +124,7 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 2 * PARAMETER_LENGTH) {
                 handle_sent_address_second_part(msg, context);
-                handle_flow_rate_first_part(msg,context);
+                handle_flow_rate_first_part(msg, context);
 
                 if (context->method_id == STOP_STREAM) {
                     handle_receive_address_first_part(msg, context);
@@ -144,14 +132,13 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
 
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 3 * PARAMETER_LENGTH) {
-                handle_flow_rate_second_part(msg,context);
+                handle_flow_rate_second_part(msg, context);
                 if (context->method_id == STOP_STREAM) {
                     handle_receive_address_second_part(msg, context);
                 }
                 context->next_param = NONE;
                 break;
             }
-
 
             context->next_param = CALL_DATA;
             break;
@@ -219,10 +206,10 @@ void handle_batch_call(ethPluginProvideParameter_t *msg, context_t *context) {
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 2 * PARAMETER_LENGTH) {
                 handle_receive_address_second_part(msg, context);
-                handle_flow_rate_first_part(msg,context);
+                handle_flow_rate_first_part(msg, context);
             } else if (msg->parameterOffset ==
                        context->offset + SELECTOR_SIZE + 3 * PARAMETER_LENGTH) {
-                handle_flow_rate_second_part(msg,context);
+                handle_flow_rate_second_part(msg, context);
                 context->next_param = NONE;
                 break;
             }
