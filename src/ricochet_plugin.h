@@ -121,3 +121,5 @@ void handle_query_contract_ui(void *parameters);
 void handle_finalize(void *parameters);
 void handle_provide_token(void *parameters);
 void handle_query_contract_id(void *parameters);
+
+char compare_array(uint8_t a[], uint8_t b[], int size);

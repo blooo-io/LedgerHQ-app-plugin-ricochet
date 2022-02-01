@@ -174,7 +174,7 @@ void dispatch_plugin_calls(int message, void *parameters) {
         case ETH_PLUGIN_PROVIDE_PARAMETER:
             handle_provide_parameter(parameters);
             break;
-        case ETH_PLUGIN_PROVIDE_TOKEN:
+        case ETH_PLUGIN_PROVIDE_INFO:
             handle_provide_token(parameters);
             break;
         case ETH_PLUGIN_FINALIZE:

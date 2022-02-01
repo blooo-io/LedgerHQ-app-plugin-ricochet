@@ -11,9 +11,7 @@ char compare_array(uint8_t a[], uint8_t b[], int size) {
 }
 
 static unsigned long long amountToDecimal(context_t *context, int size) {
-    uint8_t i;
     long long int value = 0;
-
     for (uint8_t i = 0; i < size; i++) {
         value = value * 256 + context->amount[i];
     }
@@ -61,7 +59,7 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     }
 
     if (context->method_id != STOP_STREAM) {
-        unsigned long long value = amountToDecimal(context->amount, sizeof(context->amount));
+        unsigned long long value = amountToDecimal(context, sizeof(context->amount));
         value *= 2592000;  // switch from token per sec to token per month for UX only.
         decimalToAmount(value, context);
 
@@ -115,7 +113,7 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
         }
     }
 
-    unsigned long long value = amountToDecimal(context->amount, sizeof(context->amount));
+    unsigned long long value = amountToDecimal(context, sizeof(context->amount));
     value *= 2592000;  // switch from token per sec to token per month for UX only.
 
     decimalToAmount(value, context);
@@ -182,7 +180,7 @@ static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
 }
 
 // Helper function that returns the enum corresponding to the screen that should be displayed.
-static screens_t get_screen(const ethQueryContractUI_t *msg, const context_t *context) {
+static screens_t get_screen(const ethQueryContractUI_t *msg) {
     uint8_t index = msg->screenIndex;
 
     switch (index) {
@@ -206,7 +204,7 @@ void handle_query_contract_ui(void *parameters) {
     memset(msg->msg, 0, msg->msgLength);
     msg->result = ETH_PLUGIN_RESULT_OK;
 
-    screens_t screen = get_screen(msg, context);
+    screens_t screen = get_screen(msg);
 
     switch (context->selectorIndex) {
         case DOWNGRADE:
