@@ -1,6 +1,6 @@
 #include "ricochet_plugin.h"
 
-void handle_downgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
+void handle_downgrade_tokens(context_t *context) {
     super_token_ticker_t *currentToken = NULL;
     for (uint8_t i = 0; i < NUM_SUPER_TOKEN_COLLECTION; i++) {
         currentToken = (super_token_ticker_t *) PIC(&SUPER_TOKEN_COLLECTION[i]);
@@ -18,7 +18,7 @@ void handle_downgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     }
 }
 
-void handle_upgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
+void handle_upgrade_tokens(context_t *context) {
     super_token_ticker_t *currentToken = NULL;
     for (uint8_t i = 0; i < NUM_SUPER_TOKEN_COLLECTION; i++) {
         currentToken = (super_token_ticker_t *) PIC(&SUPER_TOKEN_COLLECTION[i]);
@@ -36,7 +36,7 @@ void handle_upgrade_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     }
 }
 
-void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
+void handle_cfa_tokens(context_t *context) {
     contract_address_ticker_t *currentContract = NULL;
 
     for (uint8_t i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
@@ -46,10 +46,10 @@ void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
                     context->contract_address_received,
                     ADDRESS_LENGTH) == 0 &&
              context->method_id == STOP_STREAM) ||
-            memcmp(currentContract->contract_address,
-                   context->contract_address_sent,
-                   ADDRESS_LENGTH) == 0 &&
-                (context->method_id == UPDATE_STREAM || context->method_id == START_STREAM)) {
+            (memcmp(currentContract->contract_address,
+                    context->contract_address_sent,
+                    ADDRESS_LENGTH) == 0 &&
+             (context->method_id == UPDATE_STREAM || context->method_id == START_STREAM))) {
             strlcpy(context->ticker_sent,
                     (char *) currentContract->ticker_sent,
                     sizeof(context->ticker_sent));
@@ -61,7 +61,7 @@ void handle_cfa_tokens(ethPluginProvideToken_t *msg, context_t *context) {
     }
 }
 
-void handle_received_address(ethPluginProvideToken_t *msg, context_t *context) {
+void handle_received_address(ethPluginProvideInfo_t *msg, context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,
@@ -69,7 +69,7 @@ void handle_received_address(ethPluginProvideToken_t *msg, context_t *context) {
 }
 
 void handle_provide_token(void *parameters) {
-    ethPluginProvideToken_t *msg = (ethPluginProvideToken_t *) parameters;
+    ethPluginProvideInfo_t *msg = (ethPluginProvideInfo_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
 
     switch (context->selectorIndex) {
@@ -77,15 +77,15 @@ void handle_provide_token(void *parameters) {
         case DOWNGRADE_TO_ETH:
             context->decimals = DEFAULT_DECIMAL;
             handle_received_address(msg, context);
-            handle_downgrade_tokens(msg, context);
+            handle_downgrade_tokens(context);
             break;
         case UPGRADE:
         case UPGRADE_TO_ETH:
             handle_received_address(msg, context);
-            handle_upgrade_tokens(msg, context);
+            handle_upgrade_tokens(context);
             break;
         case CALL_AGREEMENT:
-            handle_cfa_tokens(msg, context);
+            handle_cfa_tokens(context);
             break;
         case BATCH_CALL:
             break;
