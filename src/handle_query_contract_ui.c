@@ -1,4 +1,9 @@
 #include "ricochet_plugin.h"
+
+#ifdef TARGET_TESTING
+#include <bsd/string.h>
+#endif
+
 // Set UI for the "Send" screen.
 
 // function to compare array elements
