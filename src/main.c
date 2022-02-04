@@ -1,5 +1,5 @@
 /*******************************************************************************
- *   Ethereum 2 Deposit Application
+ *   Ricochet Plugin Application
  *   (c) 2020 Ledger
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
