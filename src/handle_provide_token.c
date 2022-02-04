@@ -61,7 +61,7 @@ void handle_cfa_tokens(context_t *context) {
     }
 }
 
-void handle_received_address(ethPluginProvideInfo_t *msg, context_t *context) {
+void handle_received_address(const ethPluginProvideInfo_t *msg, context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
            msg->pluginSharedRO->txContent->destination,

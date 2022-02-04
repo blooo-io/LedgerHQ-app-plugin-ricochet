@@ -1,35 +1,45 @@
 #include "ricochet_plugin.h"
+#include <limits.h>
+
+#ifdef TARGET_TESTING
+#include <bsd/string.h>
+#endif
+
 // Set UI for the "Send" screen.
 
 // function to compare array elements
-char compare_array(uint8_t a[], uint8_t b[], int size) {
-    int i;
-    for (i = 0; i < size; i++) {
+char compare_array(const uint8_t a[], const uint8_t b[], size_t size) {
+    for (size_t i = 0; i < size; i++) {
         if (a[i] != b[i]) return 1;
     }
     return 0;
 }
 
-static unsigned long long amountToDecimal(context_t *context, int size) {
-    long long int value = 0;
-    for (uint8_t i = 0; i < size; i++) {
+static int amountToDecimal(const context_t *context, size_t size, unsigned long long *out) {
+    unsigned long long value = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (value > ULLONG_MAX / 256) {
+            return -1;
+        }
         value = value * 256 + context->amount[i];
     }
-    return value;
+    *out = value;
+    return 0;
 }
 
 static void decimalToAmount(unsigned long long value, context_t *context) {
-    uint8_t i = 0, rem;
+    int i = 0;
+    uint8_t rem;
     memset(context->amount, 0, sizeof(context->amount));
     do {
-        rem = (int) (value % 256);
+        rem = (uint8_t)(value % 256);
         value /= 256;
         context->amount[sizeof(context->amount) - i - 1] = rem;
         i++;
     } while (value != 0);
 }
 
-static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
     amountToString(context->amount,
@@ -40,13 +50,12 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
-static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+static int set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "From", msg->titleLength);
 
-    uint8_t i;
     contract_address_ticker_t *currentTicker = NULL;
 
-    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+    for (int i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
         currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
         if (compare_array(currentTicker->contract_address,
                           context->contract_address_received,
@@ -59,8 +68,14 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     }
 
     if (context->method_id != STOP_STREAM) {
-        unsigned long long value = amountToDecimal(context, sizeof(context->amount));
-        value *= 2592000;  // switch from token per sec to token per month for UX only.
+        unsigned long long value;
+        if (amountToDecimal(context, sizeof(context->amount), &value)) {
+            return -1;
+        }
+        // switch from token per sec to token per month for UX only.
+        if (__builtin_umulll_overflow(value, 2592000, &value)) {
+            return -1;
+        }
         decimalToAmount(value, context);
 
         amountToString(context->amount,
@@ -74,15 +89,15 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     } else {
         strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
     }
+    return 0;
 }
 
 static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "To", msg->titleLength);
 
-    uint8_t i;
     contract_address_ticker_t *currentTicker = NULL;
 
-    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+    for (int i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
         currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
         if (compare_array(currentTicker->contract_address,
                           context->contract_address_received,
@@ -96,7 +111,7 @@ static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+static int set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "From", msg->titleLength);
 
     contract_address_ticker_t *currentTicker = NULL;
@@ -113,9 +128,14 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
         }
     }
 
-    unsigned long long value = amountToDecimal(context, sizeof(context->amount));
-    value *= 2592000;  // switch from token per sec to token per month for UX only.
-
+    unsigned long long value;
+    if (amountToDecimal(context, sizeof(context->amount), &value)) {
+        return -1;
+    }
+    // switch from token per sec to token per month for UX only.
+    if (__builtin_umulll_overflow(value, 2592000, &value)) {
+        return -1;
+    }
     decimalToAmount(value, context);
 
     amountToString(context->amount,
@@ -126,6 +146,7 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
                    msg->msgLength);
 
     strcat(msg->msg, " per month");
+    return 0;
 }
 
 static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -147,7 +168,7 @@ static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) 
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
     amountToString(msg->pluginSharedRO->txContent->value.value,
@@ -158,7 +179,7 @@ static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *con
                    msg->msgLength);
 }
 
-static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
 
     amountToString(msg->pluginSharedRO->txContent->value.value,
@@ -169,7 +190,7 @@ static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t 
                    msg->msgLength);
 }
 
-static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
     amountToString(context->amount,
                    sizeof(context->amount),
@@ -186,13 +207,10 @@ static screens_t get_screen(const ethQueryContractUI_t *msg) {
     switch (index) {
         case 0:
             return SEND_SCREEN;
-            break;
         case 1:
             return RECEIVE_SCREEN;
-            break;
         default:
             return ERROR;
-            break;
     }
 }
 
@@ -226,7 +244,9 @@ void handle_query_contract_ui(void *parameters) {
         case CALL_AGREEMENT:
             switch (screen) {
                 case SEND_SCREEN:
-                    set_cfa_from_ui(msg, context);
+                    if (set_cfa_from_ui(msg, context)) {
+                        msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    }
                     break;
                 case RECEIVE_SCREEN:
                     set_cfa_to_ui(msg, context);
@@ -244,6 +264,7 @@ void handle_query_contract_ui(void *parameters) {
                     break;
                 case RECEIVE_SCREEN:
                     set_upgrade_to_eth_received_ui(msg, context);
+                    break;
                 default:
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -254,7 +275,9 @@ void handle_query_contract_ui(void *parameters) {
         case BATCH_CALL:
             switch (screen) {
                 case SEND_SCREEN:
-                    set_batch_call_from_ui(msg, context);
+                    if (set_batch_call_from_ui(msg, context)) {
+                        msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    }
                     break;
                 case RECEIVE_SCREEN:
                     set_batch_call_to_ui(msg, context);
@@ -262,6 +285,7 @@ void handle_query_contract_ui(void *parameters) {
                 default:
                     break;
             }
+            break;
 
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
