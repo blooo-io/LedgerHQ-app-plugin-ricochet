@@ -269,6 +269,7 @@ void handle_query_contract_ui(void *parameters) {
                     break;
                 case RECEIVE_SCREEN:
                     set_upgrade_to_eth_received_ui(msg, context);
+                    break;
                 default:
                     PRINTF("Received an invalid screenIndex\n");
                     msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -289,6 +290,7 @@ void handle_query_contract_ui(void *parameters) {
                 default:
                     break;
             }
+            break;
 
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
