@@ -5,7 +5,7 @@ void handle_init_cfa_screen(ethQueryContractID_t *msg, const context_t *context)
 
     for (uint8_t i = 0; i < NUM_CFA_METHOD_COLLECTION; i++) {
         cfaMethod = (cfa_method_t *) PIC(&CFA_METHOD_COLLECTION[i]);
-        if (compare_array(cfaMethod->method, (uint8_t *) context->method_cfa, SELECTOR_SIZE) == 0) {
+        if (compare_array(cfaMethod->method, context->method_cfa, SELECTOR_SIZE) == 0) {
             strlcpy(msg->version, (char *) cfaMethod->method_name, msg->versionLength);
             break;
         }

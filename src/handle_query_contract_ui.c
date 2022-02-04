@@ -8,15 +8,14 @@
 // Set UI for the "Send" screen.
 
 // function to compare array elements
-char compare_array(uint8_t a[], uint8_t b[], int size) {
-    int i;
-    for (i = 0; i < size; i++) {
+char compare_array(const uint8_t a[], const uint8_t b[], size_t size) {
+    for (size_t i = 0; i < size; i++) {
         if (a[i] != b[i]) return 1;
     }
     return 0;
 }
 
-static int amountToDecimal(context_t *context, size_t size, unsigned long long *out) {
+static int amountToDecimal(const context_t *context, size_t size, unsigned long long *out) {
     unsigned long long value = 0;
     for (size_t i = 0; i < size; i++) {
         if (value > ULLONG_MAX / 256) {
@@ -29,17 +28,18 @@ static int amountToDecimal(context_t *context, size_t size, unsigned long long *
 }
 
 static void decimalToAmount(unsigned long long value, context_t *context) {
-    uint8_t i = 0, rem;
+    int i = 0;
+    uint8_t rem;
     memset(context->amount, 0, sizeof(context->amount));
     do {
-        rem = (int) (value % 256);
+        rem = (uint8_t)(value % 256);
         value /= 256;
         context->amount[sizeof(context->amount) - i - 1] = rem;
         i++;
     } while (value != 0);
 }
 
-static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
     amountToString(context->amount,
@@ -53,10 +53,9 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
 static int set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "From", msg->titleLength);
 
-    uint8_t i;
     contract_address_ticker_t *currentTicker = NULL;
 
-    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+    for (int i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
         currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
         if (compare_array(currentTicker->contract_address,
                           context->contract_address_received,
@@ -96,10 +95,9 @@ static int set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
 static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "To", msg->titleLength);
 
-    uint8_t i;
     contract_address_ticker_t *currentTicker = NULL;
 
-    for (i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
+    for (int i = 0; i < NUM_CONTRACT_ADDRESS_COLLECTION; i++) {
         currentTicker = (contract_address_ticker_t *) PIC(&CONTRACT_ADDRESS_COLLECTION[i]);
         if (compare_array(currentTicker->contract_address,
                           context->contract_address_received,
@@ -170,7 +168,7 @@ static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) 
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
     amountToString(msg->pluginSharedRO->txContent->value.value,
@@ -181,7 +179,7 @@ static void set_upgrade_to_eth_send_ui(ethQueryContractUI_t *msg, context_t *con
                    msg->msgLength);
 }
 
-static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
 
     amountToString(msg->pluginSharedRO->txContent->value.value,
@@ -192,7 +190,7 @@ static void set_upgrade_to_eth_received_ui(ethQueryContractUI_t *msg, context_t 
                    msg->msgLength);
 }
 
-static void set_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
+static void set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Receive", msg->titleLength);
     amountToString(context->amount,
                    sizeof(context->amount),
@@ -209,13 +207,10 @@ static screens_t get_screen(const ethQueryContractUI_t *msg) {
     switch (index) {
         case 0:
             return SEND_SCREEN;
-            break;
         case 1:
             return RECEIVE_SCREEN;
-            break;
         default:
             return ERROR;
-            break;
     }
 }
 

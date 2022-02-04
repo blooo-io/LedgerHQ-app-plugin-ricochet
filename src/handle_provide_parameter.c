@@ -12,14 +12,14 @@ static void handle_agreement_class(const ethPluginProvideParameter_t *msg, conte
            sizeof(context->contract_address_sent));
 }
 
-static void handle_method_cfa(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_method_cfa(const ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->method_cfa, 0, sizeof(context->method_cfa));
     memcpy(context->method_cfa, &msg->parameter[0], sizeof(context->method_cfa));
 
-    cfa_method_t *cfaMethod = NULL;
+    const cfa_method_t *cfaMethod = NULL;
 
-    for (uint8_t i = 0; i < NUM_CFA_METHOD_COLLECTION; i++) {
-        cfaMethod = (cfa_method_t *) PIC(&CFA_METHOD_COLLECTION[i]);
+    for (int i = 0; i < NUM_CFA_METHOD_COLLECTION; i++) {
+        cfaMethod = (const cfa_method_t *) PIC(&CFA_METHOD_COLLECTION[i]);
         if (compare_array(cfaMethod->method, context->method_cfa, SELECTOR_SIZE) == 0) {
             context->method_id = cfaMethod->method_id;
             break;
@@ -27,34 +27,35 @@ static void handle_method_cfa(ethPluginProvideParameter_t *msg, context_t *conte
     }
 }
 
-static void handle_token_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_token_first_part(const ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->token_address, 0, sizeof(context->token_address));
     memcpy(context->token_address,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE],
            sizeof(context->token_address) - SELECTOR_SIZE);
 }
 
-static void handle_token_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
-    // memset(context->token_address, 0, sizeof(context->token_address));
+static void handle_token_second_part(const ethPluginProvideParameter_t *msg, context_t *context) {
     memcpy(&context->token_address[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
-static void handle_sent_address_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_sent_address_first_part(const ethPluginProvideParameter_t *msg,
+                                           context_t *context) {
     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
     memcpy(context->contract_address_sent,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH + SELECTOR_SIZE],
            sizeof(context->contract_address_sent) - SELECTOR_SIZE);
 }
 
-static void handle_sent_address_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_sent_address_second_part(const ethPluginProvideParameter_t *msg,
+                                            context_t *context) {
     memcpy(&context->contract_address_sent[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
-static void handle_receive_address_first_part(ethPluginProvideParameter_t *msg,
+static void handle_receive_address_first_part(const ethPluginProvideParameter_t *msg,
                                               context_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
@@ -62,21 +63,23 @@ static void handle_receive_address_first_part(ethPluginProvideParameter_t *msg,
            sizeof(context->contract_address_received) - SELECTOR_SIZE);
 }
 
-static void handle_receive_address_second_part(ethPluginProvideParameter_t *msg,
+static void handle_receive_address_second_part(const ethPluginProvideParameter_t *msg,
                                                context_t *context) {
     memcpy(&context->contract_address_received[ADDRESS_LENGTH - SELECTOR_SIZE],
            &msg->parameter[0],
            SELECTOR_SIZE);
 }
 
-static void handle_flow_rate_first_part(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_flow_rate_first_part(const ethPluginProvideParameter_t *msg,
+                                        context_t *context) {
     memset(context->amount, 0, sizeof(context->amount));
     memcpy(context->amount,
-           &msg->parameter[PARAMETER_LENGTH - INT256_LENGTH + SELECTOR_SIZE],
+           &msg->parameter[SELECTOR_SIZE],
            sizeof(context->amount) - SELECTOR_SIZE);
 }
 
-static void handle_flow_rate_second_part(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_flow_rate_second_part(const ethPluginProvideParameter_t *msg,
+                                         context_t *context) {
     memcpy(&context->amount[INT256_LENGTH - SELECTOR_SIZE], &msg->parameter[0], SELECTOR_SIZE);
 }
 
