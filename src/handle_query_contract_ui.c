@@ -1,4 +1,5 @@
 #include "ricochet_plugin.h"
+#include <limits.h>
 
 #ifdef TARGET_TESTING
 #include <bsd/string.h>
@@ -15,12 +16,16 @@ char compare_array(uint8_t a[], uint8_t b[], int size) {
     return 0;
 }
 
-static unsigned long long amountToDecimal(context_t *context, int size) {
-    long long int value = 0;
-    for (uint8_t i = 0; i < size; i++) {
+static int amountToDecimal(context_t *context, size_t size, unsigned long long *out) {
+    unsigned long long value = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (value > ULLONG_MAX / 256) {
+            return -1;
+        }
         value = value * 256 + context->amount[i];
     }
-    return value;
+    *out = value;
+    return 0;
 }
 
 static void decimalToAmount(unsigned long long value, context_t *context) {
@@ -45,7 +50,7 @@ static void set_amount_ui(ethQueryContractUI_t *msg, context_t *context) {
                    msg->msgLength);
 }
 
-static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+static int set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "From", msg->titleLength);
 
     uint8_t i;
@@ -64,8 +69,14 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     }
 
     if (context->method_id != STOP_STREAM) {
-        unsigned long long value = amountToDecimal(context, sizeof(context->amount));
-        value *= 2592000;  // switch from token per sec to token per month for UX only.
+        unsigned long long value;
+        if (amountToDecimal(context, sizeof(context->amount), &value)) {
+            return -1;
+        }
+        // switch from token per sec to token per month for UX only.
+        if (__builtin_umulll_overflow(value, 2592000, &value)) {
+            return -1;
+        }
         decimalToAmount(value, context);
 
         amountToString(context->amount,
@@ -79,6 +90,7 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     } else {
         strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
     }
+    return 0;
 }
 
 static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -101,7 +113,7 @@ static void set_cfa_to_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->msg, context->ticker_received, msg->msgLength);
 }
 
-static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+static int set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "From", msg->titleLength);
 
     contract_address_ticker_t *currentTicker = NULL;
@@ -118,9 +130,14 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
         }
     }
 
-    unsigned long long value = amountToDecimal(context, sizeof(context->amount));
-    value *= 2592000;  // switch from token per sec to token per month for UX only.
-
+    unsigned long long value;
+    if (amountToDecimal(context, sizeof(context->amount), &value)) {
+        return -1;
+    }
+    // switch from token per sec to token per month for UX only.
+    if (__builtin_umulll_overflow(value, 2592000, &value)) {
+        return -1;
+    }
     decimalToAmount(value, context);
 
     amountToString(context->amount,
@@ -131,6 +148,7 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
                    msg->msgLength);
 
     strcat(msg->msg, " per month");
+    return 0;
 }
 
 static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) {
@@ -231,7 +249,9 @@ void handle_query_contract_ui(void *parameters) {
         case CALL_AGREEMENT:
             switch (screen) {
                 case SEND_SCREEN:
-                    set_cfa_from_ui(msg, context);
+                    if (set_cfa_from_ui(msg, context)) {
+                        msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    }
                     break;
                 case RECEIVE_SCREEN:
                     set_cfa_to_ui(msg, context);
@@ -259,7 +279,9 @@ void handle_query_contract_ui(void *parameters) {
         case BATCH_CALL:
             switch (screen) {
                 case SEND_SCREEN:
-                    set_batch_call_from_ui(msg, context);
+                    if (set_batch_call_from_ui(msg, context)) {
+                        msg->result = ETH_PLUGIN_RESULT_ERROR;
+                    }
                     break;
                 case RECEIVE_SCREEN:
                     set_batch_call_to_ui(msg, context);
