@@ -70,7 +70,8 @@ static void set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
                        msg->msg,
                        msg->msgLength);
 
-        strcat(msg->msg, " per month");
+        strlcat(msg->msg, " per month", msg->msgLength);
+
     } else {
         strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
     }
@@ -125,7 +126,8 @@ static void set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context
                    msg->msg,
                    msg->msgLength);
 
-    strcat(msg->msg, " per month");
+    strlcat(msg->msg, " per month", msg->msgLength);
+
 }
 
 static void set_batch_call_to_ui(ethQueryContractUI_t *msg, context_t *context) {
