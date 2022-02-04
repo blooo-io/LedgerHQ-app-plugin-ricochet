@@ -1,16 +1,15 @@
 import Zemu from "@zondax/zemu";
 import Eth from "@ledgerhq/hw-app-eth";
 import { generate_plugin_config } from "./generate_plugin_config";
-import { getContractAddress, parseEther, parseUnits, RLP } from "ethers/lib/utils";
+import { parseEther, parseUnits, RLP } from "ethers/lib/utils";
 import { ethers } from "ethers";
 
 const transactionUploadDelay = 60000;
 
 const sim_options_generic = {
   logging: true,
-  X11: true,
-  startDelay: 5000,
-};
+  startDelay: 10000,
+  startText: 'is ready'};
 
 const Resolve = require("path").resolve;
 
@@ -270,7 +269,7 @@ function processUpgradeTest(device, pluginName, transactionUploadDelay, token, c
     );
     const steps = device.steps
     await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
-
+    
     await tx;
     //}
   }, signed, testNetwork));
@@ -528,6 +527,7 @@ function processSecondStartTest(device, pluginName, transactionUploadDelay, toke
     );
     const steps = device.steps
     await sim.navigateAndCompareSnapshots(".", label, [steps, 0]);
+
     await tx;
   }, signed, testNetwork));
 }

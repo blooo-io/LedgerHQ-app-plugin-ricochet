@@ -98,7 +98,7 @@ typedef struct context_t {
     uint8_t method_cfa[SELECTOR_SIZE];
     uint8_t method_id;
 
-    uint16_t offset;
+    uint32_t offset;
     uint16_t go_to_offset;
     uint16_t checkpoint;
     uint8_t next_param;
@@ -122,4 +122,4 @@ void handle_finalize(void *parameters);
 void handle_provide_token(void *parameters);
 void handle_query_contract_id(void *parameters);
 
-char compare_array(uint8_t a[], uint8_t b[], int size);
+char compare_array(const uint8_t a[], const uint8_t b[], size_t size);
