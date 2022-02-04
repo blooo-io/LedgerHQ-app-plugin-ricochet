@@ -32,7 +32,7 @@ static void decimalToAmount(unsigned long long value, context_t *context) {
     uint8_t rem;
     memset(context->amount, 0, sizeof(context->amount));
     do {
-        rem = (uint8_t)(value % 256);
+        rem = (uint8_t) (value % 256);
         value /= 256;
         context->amount[sizeof(context->amount) - i - 1] = rem;
         i++;
@@ -85,7 +85,7 @@ static int set_cfa_from_ui(ethQueryContractUI_t *msg, context_t *context) {
                        msg->msg,
                        msg->msgLength);
 
-        strcat(msg->msg, " per month");
+        strlcat(msg->msg, " per month", msg->msgLength);
     } else {
         strlcpy(msg->msg, context->ticker_sent, msg->msgLength);
     }
@@ -145,7 +145,8 @@ static int set_batch_call_from_ui(ethQueryContractUI_t *msg, context_t *context)
                    msg->msg,
                    msg->msgLength);
 
-    strcat(msg->msg, " per month");
+    strlcat(msg->msg, " per month", msg->msgLength);
+
     return 0;
 }
 
