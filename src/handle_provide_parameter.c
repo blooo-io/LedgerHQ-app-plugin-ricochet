@@ -97,7 +97,7 @@ static void handle_call_agreement(ethPluginProvideParameter_t *msg, context_t *c
             context->next_param = PATH_OFFSET;
             break;
         case PATH_OFFSET:
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset));
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset) + 2);
             context->next_param = PATH_LENGTH;
             context->skip++;
             break;
@@ -156,7 +156,7 @@ void handle_batch_call(ethPluginProvideParameter_t *msg, context_t *context) {
 
     switch (context->next_param) {
         case PATH_OFFSET:
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset));
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset) + 2);
             context->next_param = PATH_LENGTH;
             break;
         case PATH_LENGTH:
@@ -168,7 +168,7 @@ void handle_batch_call(ethPluginProvideParameter_t *msg, context_t *context) {
             context->next_param = CONTRACT_PATH_OFFSET;
             break;
         case CONTRACT_PATH_OFFSET:
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset)) +
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->offset) + 2) +
                               PARAMETER_LENGTH * 2;
             context->go_to_offset = 1;
             context->next_param = OPERATION_TYPE;
