@@ -11,11 +11,11 @@ const devices = [
         label: "Nano S",
         steps: 6, // <= Define the number of steps for this test case and this device
     },
-    // {
-    //   name: "nanox",
-    //   label: "Nano X",
-    //   steps: 6, // <= Define the number of steps for this test case and this device
-    // },
+    {
+      name: "nanox",
+      label: "Nano X",
+      steps: 6, // <= Define the number of steps for this test case and this device
+    },
 ];
 var contractAddrs = {
     "MATICx": "0x3ad736904e9e65189c3000c7dd2c8ac8bb7cd4e3",
